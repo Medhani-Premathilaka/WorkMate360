@@ -68,4 +68,11 @@ public class ProfileService {
 //                    HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
     }
+
+    public Profile updateProfile(Profile profile) {
+        profileDao.save(profile);
+        return profile;
+        //return "Updated successfully";
+    }
+
 }
