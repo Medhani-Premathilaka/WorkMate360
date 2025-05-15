@@ -37,7 +37,7 @@ public class ProfileController {
 
     @PutMapping("/update")
     public Profile updateProfile(@RequestBody Profile profile) {
-        System.out.println("hello");
+
          return profileService.updateProfile(profile);
     }
 
