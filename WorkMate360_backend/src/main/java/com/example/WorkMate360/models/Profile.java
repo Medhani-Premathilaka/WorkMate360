@@ -14,7 +14,8 @@ import java.util.Date;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_seq")
+    @SequenceGenerator(name = "profile_seq", sequenceName = "profile_seq", allocationSize = 1)
     private Integer Index;
     private String Name;
     private String Email;
