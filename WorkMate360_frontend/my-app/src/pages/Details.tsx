@@ -20,6 +20,10 @@ interface Profile {
 
 export function Details() {
   const [selectedValue, setSelectedValue] = useState('');
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  
+
+
   const { openFilePicker, filesContent, loading, clear } = useFilePicker({
     accept: '.png',
     readAs: 'DataURL', // This ensures we get base64 encoded images
@@ -131,6 +135,13 @@ export function Details() {
               </div>
             </div>
           </div>
+          <div className='m-4 p-8 w-full  h-auto align-middle flex justify-end'>
+            <button className='bg-lime-700 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Add</button>
+            <button className='bg-red-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Delete</button>
+            <button className='bg-blue-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Reset</button>
+            <button className='bg-yellow-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Update</button>
+          </div>
+
         </form>
       </div>
     </div>
