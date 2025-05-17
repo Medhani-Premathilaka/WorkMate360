@@ -12,7 +12,7 @@ export function Nav() {
   };
 
   return (
-    <div className='bg-slate-700 w-full h-32 relative'>
+    <div className='bg-slate-700 fixed w-full h-32 '>
       {/* Main Navigation */}
       <span className='text-white pl-10 font-serif text-2xl'>WorkMate</span>
       <span className='font-serif text-white text-5xl'>360</span>
