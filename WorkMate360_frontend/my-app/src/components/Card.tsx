@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import profileimage from '../assets/images/profile.png';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const API_URL = "http://localhost:8080/profile/all";
 
@@ -18,6 +21,7 @@ interface Profile {
 }
 
 export function Card() {
+  const navigate = useNavigate();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,18 +30,9 @@ export function Card() {
     const fetchAllProfiles = async () => {
       try {
         const response = await axios.get(API_URL);
-        console.log("API Response:", response.data); // Debug log
         setProfiles(response.data);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.error("Full error details:", {
-            message: error.message,
-            config: error.config,
-            response: error.response?.data
-          });
-        } else {
-          console.error("Unknown error:", error);
-        }
+        console.error("Error fetching profiles:", error);
         setError("Failed to load profiles. Please check console for details.");
       } finally {
         setLoading(false);
@@ -61,33 +56,26 @@ export function Card() {
   }
 
   return (
-    <div className="w-[50vw] h-[80vh] bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="fixed left-50 right-100 h-[100vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
       <h1 className="text-black text-center pt-10 font-bold text-xl">List of Profiles</h1>
-      <div className="p-5 space-y-4 overflow-y-auto h-[60vh]">
+      
+      {/* Scrollable content area with bottom padding */}
+      <div className="p-5 space-y-4 overflow-y-auto flex-1 pb-24"> {/* Added pb-24 for bottom space */}
         {profiles.length > 0 ? (
           profiles.map((profile) => (
-            <div key={profile.index} className="bg-[#99AAAB] p-4 rounded-lg">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-900 font-medium">{profile.index}. {profile.name }</p>
-                  <p className="text-gray-700 text-sm">Email: {profile.email }</p>
-                  <p className="text-gray-700 text-sm">Phone: {profile.phoneNumber }</p>
-                </div>
-                <div>
-                  <p className="text-gray-700 text-sm">
-                    Location: {profile.province }, {profile.district }
-                  </p>
-                  <p className="text-gray-700 text-sm">
-                    Address: {profile.street }, {profile.houseNumber }
-                  </p>
-                  <p className="text-gray-700 text-sm">
-                    Gender: {profile.gender } | Age: {profile.ageNow }
-                  </p>
-                  <p className="text-gray-700 text-sm">
-                    Address: {profile.dateOfBirth }
-                  </p>
-                </div>
+            <div key={profile.index} className="flex items-center bg-[#99AAAB] p-4 rounded-lg">
+              <img src={profileimage} alt="profile_icon" className='w-20 h-20 object-cover mr-4' />
+              <div className="flex-2 ">
+                <p className="text-gray-900 font-medium">{profile.index}. {profile.name}</p>
+                <p className="text-gray-700 text-sm">Email: {profile.email}</p>
+                <p className="text-gray-700 text-sm">Phone: {profile.phoneNumber}</p>
               </div>
+              <button 
+                className="bg-slate-700 p-2 rounded-xl hover:bg-slate-600 text-white"
+                onClick={() => navigate(`/details/${profile.index}`)}
+              >
+                View
+              </button>
             </div>
           ))
         ) : (
@@ -97,6 +85,8 @@ export function Card() {
           </div>
         )}
       </div>
+
+      
     </div>
   );
 }
