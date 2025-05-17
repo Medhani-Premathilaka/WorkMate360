@@ -1,7 +1,7 @@
 //import { useState } from 'react';
 import { Dialog } from '@mui/material';
 import logoutimage from '../assets/images/logout.png'
-import AlertDialog from './Alert';
+//import AlertDialog from './Alert';
 import React from 'react';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -33,20 +33,20 @@ const handleClickOpen = () => {
     
       <Dialog open={open} onClose={handleClose}
         aria-labelledby="Logout"
-        aria-describedby="Logout-Description">
+        aria-describedby="Logout-Description" className='rounded-2xl'>
 
           <DialogTitle id="Logout" >
           <span className='font-serif text-slate-700 font-bold'>Logout</span>
         </DialogTitle>
         <DialogContent>
         <DialogContentText id="Logout-Description">
-            For your account’s security, please confirm you want to sign out.
+            For your account’s security, please confirm you want to Logout.
           </DialogContentText>
           </DialogContent>
           <DialogActions>
           <Button onClick={handleClose} className='bg-slate-700 hover:bg-slate-300 hover:text-black'>Disagree</Button>
           <Button onClick={handleClose} className='bg-slate-700 hover:bg-slate-300 hover:text-black'>
-            Agree
+            <a href="/">Agree</a>
           </Button>
         </DialogActions>
         </Dialog>

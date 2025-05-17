@@ -1,6 +1,7 @@
 package com.example.WorkMate360.models;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,9 +24,14 @@ public class Profile {
     private String Street;
     private String HouseNumber;
     private String Gender;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
     private Integer AgeNow;
+    private String Position;
+    private String Country;
+    private String Department;
+    private Double Salary;
 
    // private String ProfilePicture;
 
