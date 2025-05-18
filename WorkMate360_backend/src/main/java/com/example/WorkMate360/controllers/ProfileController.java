@@ -21,8 +21,8 @@ public class ProfileController {
         return profileService.getAllDetails();
     }
 
-    @GetMapping(value = "/all/{index}")
-    public ResponseEntity<List<Profile>> getAllProfilesByIndex(@PathVariable Integer index) {
+    @GetMapping(value = "/details/{index}")
+    public ResponseEntity<Profile> getProfileByIndex(@PathVariable Integer index) {
         return profileService.getAllDetailsByIndex(index);
     }
 
