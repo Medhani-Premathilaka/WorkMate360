@@ -27,24 +27,25 @@ public class ProfileService {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<Profile>> getAllDetailsByIndex(Integer index) {
+    public ResponseEntity<Profile> getAllDetailsByIndex(Integer index) {
         try {
             List<Profile> allProfiles = new ArrayList<>((Collection<Profile>) profileDao.findAll());
 
-            // Filter profiles by index
-            List<Profile> filteredProfiles = allProfiles.stream()
+            // Find the first profile matching the index
+            Profile matchingProfile = allProfiles.stream()
                     .filter(profile -> profile.getIndex().equals(index))
-                    .collect(java.util.stream.Collectors.toList());
+                    .findFirst()
+                    .orElse(null);
 
-            if (filteredProfiles.isEmpty()) {
-                return new ResponseEntity<>(filteredProfiles, HttpStatus.NOT_FOUND);
+            if (matchingProfile == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            return new ResponseEntity<>(filteredProfiles, HttpStatus.OK);
+            return new ResponseEntity<>(matchingProfile, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Profile> addProfile(Profile profile) {
