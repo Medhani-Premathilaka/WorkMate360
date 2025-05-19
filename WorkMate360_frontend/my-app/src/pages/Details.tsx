@@ -69,7 +69,7 @@ export function Details() {
                 <input readOnly
                   type="text" 
                   value={profile.index || ''}
-                  className='w-full h-10 bg-slate-100 rounded-lg p-2 focus:outline-black'
+                  className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
                   onChange={e => setProfile({ ...profile, index: Number(e.target.value) })}
                 />
               </div>
@@ -123,6 +123,7 @@ export function Details() {
                   onChange={e => setProfile({ ...profile, ageNow: Number(e.target.value) })}
                 />
               </div>
+              
             </div>
 
             {/* Right Column */}
