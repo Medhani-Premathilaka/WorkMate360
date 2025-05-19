@@ -16,6 +16,7 @@ interface Profile {
   gender: string;
   ageNow: number;
   dateOfBirth?: string;
+  profilePicture : string;
 }
 
 export function Details() {
@@ -35,7 +36,6 @@ export function Details() {
       try {
         const response = await axios.get(`http://localhost:8080/profile/details/${index}`);
         setProfile(response.data);
-        
       } catch (error) {
         console.error("Error fetching profiles: ", error);
       } finally {
@@ -66,11 +66,11 @@ export function Details() {
             <div className="space-y-4">
               <div>
                 <label className="block mb-2">Index</label>
-                <input 
+                <input readOnly
                   type="text" 
                   value={profile.index || ''}
-                  className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  className='w-full h-10 bg-slate-100 rounded-lg p-2 focus:outline-black'
+                  onChange={e => setProfile({ ...profile, index: Number(e.target.value) })}
                 />
               </div>
               
@@ -80,7 +80,7 @@ export function Details() {
                   type="text"
                   value={profile.phoneNumber || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, phoneNumber: e.target.value })}
                 />
               </div>
               
@@ -90,7 +90,7 @@ export function Details() {
                   type="text" 
                   value={profile.district || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, district: e.target.value })}
                 />
               </div>
               
@@ -100,7 +100,7 @@ export function Details() {
                   type="text" 
                   value={profile.houseNumber || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, houseNumber: e.target.value })}
                 />
               </div>
               
@@ -110,7 +110,7 @@ export function Details() {
                   type="date" 
                   value={profile.dateOfBirth || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, dateOfBirth: e.target.value })}
                 />
               </div>
               
@@ -120,7 +120,7 @@ export function Details() {
                   type="text" 
                   value={profile.ageNow || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, ageNow: Number(e.target.value) })}
                 />
               </div>
             </div>
@@ -133,7 +133,7 @@ export function Details() {
                   type="text" 
                   value={profile.email || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, email: e.target.value })}
                 />
               </div>
               
@@ -143,7 +143,7 @@ export function Details() {
                   type="text" 
                   value={profile.province || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, province: e.target.value })}
                 />
               </div>
               
@@ -153,7 +153,7 @@ export function Details() {
                   type="text" 
                   value={profile.street || ''}
                   className='w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black'
-                  readOnly
+                  onChange={e => setProfile({ ...profile, street: e.target.value })}
                 />
               </div>
               
@@ -161,7 +161,10 @@ export function Details() {
                 <label className="block mb-2">Gender</label>
                 <select 
                   value={selectedValue}
-                  onChange={(e) => setSelectedValue(e.target.value)}
+                  onChange={e => {
+                    setSelectedValue(e.target.value);
+                    setProfile({ ...profile, gender: e.target.value });
+                  }}
                   className="w-full h-10 p-2 bg-slate-300 rounded-lg focus:outline-black"
                 >
                   <option value="">Select Gender</option>
@@ -192,7 +195,6 @@ export function Details() {
             </div>
           </div>
           <div className='m-4 p-8 w-full h-auto align-middle flex justify-end'>
-            <button className='bg-lime-700 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Add</button>
             <button className='bg-red-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Delete</button>
             <button className='bg-blue-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Reset</button>
             <button className='bg-yellow-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4'>Update</button>
