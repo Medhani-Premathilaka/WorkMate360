@@ -112,9 +112,9 @@ export function Newdetails() {
   };
 
   return (
-    <div className="relative min-h-screen">
+    <div>
       <Nav />
-      <div className="relative left-50 right-50 top-50 h-auto bg-white rounded-xl shadow-xl overflow-y-auto flex flex-col font-serif">
+      <div className="absolute left-50 right-50 top-50 h-auto bg-white rounded-xl shadow-xl overflow-hidden flex flex-col font-serif">
         <form className="p-8" onSubmit={handleSubmit}>
           <h2 className="text-center text-xl font-bold p-8">
             Add New Employee
