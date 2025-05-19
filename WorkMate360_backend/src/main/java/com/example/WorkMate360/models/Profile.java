@@ -36,4 +36,7 @@ public class Profile {
 
    // private String ProfilePicture;
 
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
 }
