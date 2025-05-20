@@ -84,17 +84,17 @@ export function Card() {
       </h1> */}
 
       {/* Search Component */}
-      <div className="flex justify-end px-5 pt-4 pb-2">
+      <div className="flex justify-end px-5 pt-2 pb-2">
         <Search onSearch={handleSearch} />
       </div>
 
       {/* Scrollable content area */}
-      <div className="p-5 space-y-4 overflow-y-auto flex-1 pb-24 grid grid-cols-3 gap-4">
+      <div className="p-5 pb-50 space-y-4 overflow-y-auto flex-1 pb-24 grid grid-cols-3 gap-4">
         {filteredProfiles.length > 0 ? (
           filteredProfiles.map((profile) => (
             <div
               key={profile.index}
-              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-64 "
+              className="flex flex-col  items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-64 "
             >
               {/* Profile Image (Top) */}
               <img
