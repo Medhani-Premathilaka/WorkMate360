@@ -18,6 +18,7 @@ interface Profile {
   gender: string;
   ageNow: number;
   dateOfBirth?: string;
+  profilePicture:string;
 }
 
 export function Card() {
@@ -54,7 +55,9 @@ export function Card() {
 
     const searchIndex = parseInt(term);
     if (!isNaN(searchIndex)) {
-      const foundProfile = profiles.find(profile => profile.index === searchIndex);
+      const foundProfile = profiles.find(
+        (profile) => profile.index === searchIndex
+      );
       setFilteredProfiles(foundProfile ? [foundProfile] : []);
     }
   };
@@ -75,40 +78,49 @@ export function Card() {
   }
 
   return (
-    <div className="fixed left-50 right-100 h-[100vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
-      <h1 className="text-black text-center pt-10 font-bold text-xl">
+    <div className="fixed left-50 right-50 h-[100vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col ">
+      {/* <h1 className="text-black text-center pt-10 font-bold text-xl">
         List of Profiles
-      </h1>
+      </h1> */}
 
       {/* Search Component */}
-      <div className="justify-end px-5 pt-4 pb-2">
+      <div className="flex justify-end px-5 pt-4 pb-2">
         <Search onSearch={handleSearch} />
       </div>
 
       {/* Scrollable content area */}
-      <div className="p-5 space-y-4 overflow-y-auto flex-1 pb-24">
+      <div className="p-5 space-y-4 overflow-y-auto flex-1 pb-24 grid grid-cols-3 gap-4">
         {filteredProfiles.length > 0 ? (
           filteredProfiles.map((profile) => (
             <div
               key={profile.index}
-              className="flex items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors"
+              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-64 "
             >
+              {/* Profile Image (Top) */}
               <img
-                src={profileimage}
-                alt="profile_icon"
-                className="w-20 h-20 object-cover mr-4 rounded-full"
-              />
-              <div className="flex-1">
-                <p className="text-gray-900 font-medium">
-                  {profile.index}. {profile.name}
+  src={profile.profilePicture || profileimage}
+  alt="profile_icon"
+  className="w-20 h-20 object-cover rounded-full mb-3 border-2 border-white"
+/>
+
+              {/* Profile Info (Middle) */}
+              <div className="text-center w-full">
+                <p className="text-gray-900 font-medium text-lg">
+                  {profile.name}
                 </p>
-                <p className="text-gray-700 text-sm">Email: {profile.email}</p>
-                <p className="text-gray-700 text-sm">
-                  Phone: {profile.phoneNumber}
+                <p className="text-gray-700 text-sm font-bold">ID: {profile.index}</p>
+                <p
+                  className="text-gray-700 text-sm truncate"
+                  title={profile.email}
+                >
+                  {profile.email}
                 </p>
+                <p className="text-gray-700 text-sm">{profile.phoneNumber}</p>
               </div>
+
+              {/* Action Button (Bottom) */}
               <button
-                className="bg-slate-700 p-2 rounded-xl hover:bg-slate-600 text-white whitespace-nowrap"
+                className="mt-3 bg-slate-700 px-4 py-2 rounded-xl hover:bg-slate-600 text-white w-full left-50"
                 onClick={() => navigate(`/details/${profile.index}`)}
               >
                 View Details
@@ -117,7 +129,7 @@ export function Card() {
           ))
         ) : (
           <div className="text-center text-gray-500 p-10">
-            {searchTerm 
+            {searchTerm
               ? `No profile found with index ${searchTerm}`
               : "No profiles available"}
           </div>
