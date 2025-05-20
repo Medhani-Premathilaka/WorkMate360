@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProfileService {
@@ -29,23 +30,16 @@ public class ProfileService {
 
     public ResponseEntity<Profile> getAllDetailsByIndex(Integer index) {
         try {
-            List<Profile> allProfiles = new ArrayList<>((Collection<Profile>) profileDao.findAll());
-
-            // Find the first profile matching the index
-            Profile matchingProfile = allProfiles.stream()
-                    .filter(profile -> profile.getIndex().equals(index))
-                    .findFirst()
-                    .orElse(null);
-
-            if (matchingProfile == null) {
+            Optional<Profile> profileOptional = profileDao.findById(index);
+            if (profileOptional.isPresent()) {
+                return new ResponseEntity<>(profileOptional.get(), HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-
-            return new ResponseEntity<>(matchingProfile, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<Profile> addProfile(Profile profile) {
@@ -53,8 +47,8 @@ public class ProfileService {
         return new ResponseEntity<>(profile, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> deleteProfile(Integer id) {
-        profileDao.deleteById(id);
+    public ResponseEntity<String> deleteProfile(Integer index) {
+        profileDao.deleteById(index);
         return new ResponseEntity<>("Profile deleted successfully", HttpStatus.OK);
 //        try {
 //            if (profileDao.existsById(id)) {
@@ -76,4 +70,7 @@ public class ProfileService {
         //return "Updated successfully";
     }
 
+    public int count() {
+        return Math.toIntExact(profileDao.count());
+    }
 }
