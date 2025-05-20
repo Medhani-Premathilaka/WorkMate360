@@ -31,9 +31,9 @@ public class ProfileController {
         return profileService.addProfile(profile);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteProfile(@PathVariable Integer id) {
-        return profileService.deleteProfile(id);
+    @DeleteMapping("/delete/{index}")
+    public ResponseEntity<String> deleteProfile(@PathVariable Integer index) {
+        return profileService.deleteProfile(index);
     }
 
     @PutMapping("/update")

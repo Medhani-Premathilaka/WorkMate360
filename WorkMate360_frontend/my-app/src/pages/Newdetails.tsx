@@ -17,6 +17,9 @@ interface EmployeeData {
   dateOfBirth: string;
   profilePicture?: string;
   country: string;
+  position: string;
+  department: string;
+  salary: string;
 }
 
 export function Newdetails() {
@@ -33,6 +36,9 @@ export function Newdetails() {
     ageNow: "",
     dateOfBirth: "",
     country :"",
+    position: "",
+    department:"",
+    salary: "",
   });
 
   const { openFilePicker, filesContent, clear } = useFilePicker({
@@ -75,6 +81,9 @@ export function Newdetails() {
         ageNow: "",
         dateOfBirth: "",
         country:"",
+        department:"",
+        salary:"",
+        position:"",
       });
       clear();
     } catch (error) {
@@ -107,6 +116,9 @@ export function Newdetails() {
       ageNow: "",
       dateOfBirth: "",
       country: "",
+      position:"",
+      department:"",
+      salary:"",
     });
     clear();
   };
@@ -213,12 +225,25 @@ export function Newdetails() {
                 </select>
               </div>
               <div>
+                <label className="block mb-2">Position</label>
+                <input
+                  type="text"
+                  name="position"
+                  onChange={handleChange}
+                  value={formData.position}
+                  min={18}
+                  className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
+                  required
+                />
+              </div>
+
+              <div>
                 <label className="block mb-2">Salary($)</label>
                 <input
                   type="number"
-                  name="ageNow"
+                  name="salary"
                   onChange={handleChange}
-                  value={formData.ageNow}
+                  value={formData.salary}
                   min={1000}
                   className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
                   required
