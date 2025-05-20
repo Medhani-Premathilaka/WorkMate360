@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5174")
 @RequestMapping("/profile")
 public class ProfileController {
 
@@ -26,6 +26,11 @@ public class ProfileController {
         return profileService.getAllDetailsByIndex(index);
     }
 
+    @GetMapping("/count")
+    public  ResponseEntity<Long> getEmployeeCount(){
+        int count = profileService.count();
+        return ResponseEntity.ok((long) count);
+    }
     @PostMapping("/add")
     public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
         return profileService.addProfile(profile);
@@ -41,5 +46,6 @@ public class ProfileController {
 
          return profileService.updateProfile(profile);
     }
+
 
 }

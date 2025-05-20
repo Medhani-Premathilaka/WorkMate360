@@ -212,11 +212,11 @@ export function Newdetails() {
               <div>
                 <label className="block mb-2">Department</label>
                 <select
-                  name="gender"
+                  name="department"
                   className="w-full h-10 p-2 bg-slate-300 rounded-lg focus:outline-black"
                   onChange={handleChange}
                   value={formData.gender}
-                  required
+                  
                 >
                   <option value="">Select Department</option>
                   <option value="civil">Civil</option>

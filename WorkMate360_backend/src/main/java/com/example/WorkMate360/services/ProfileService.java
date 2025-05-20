@@ -70,4 +70,7 @@ public class ProfileService {
         //return "Updated successfully";
     }
 
+    public int count() {
+        return Math.toIntExact(profileDao.count());
+    }
 }
