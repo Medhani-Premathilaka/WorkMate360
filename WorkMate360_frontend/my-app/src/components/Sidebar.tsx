@@ -2,16 +2,20 @@
 import { Dialog } from '@mui/material';
 import logoutimage from '../assets/images/logout.png'
 //import AlertDialog from './Alert';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from './ui/button';
+import axios from 'axios';
+import Box from '@mui/material/Box';
+import { ThemeProvider } from '@mui/material/styles';
 
 
 export function Sidebar() {
 const [open, setOpen] = React.useState(false);
+const [employeeCount, setEmployeeCount] = useState<number>(0);
 const handleClickOpen = () => {
     setOpen(true);
   };
@@ -20,13 +24,27 @@ const handleClickOpen = () => {
     setOpen(false);
   };
 
+  useEffect (() => {
+    const fetchEmployeeCount = async () => {
+    try{
+      const response = await axios.get(`http://localhost:8080/profile/count`);
+      setEmployeeCount(response.data);
+
+    }catch(error){
+      console.log("Error",error);
+    }
+  };
+  fetchEmployeeCount();
+  },[]);
+
   return (
     <div className="fixed top-32 left-0 w-50 h-[calc(100vh-8rem)] bg-slate-600 text-white p-4 z-50 font-serif">
-      <ul>
-        <li className="py-2 border-b border-slate-500">Dashboard</li>
-        <li className="py-2 border-b border-slate-500">Profile</li>
-        <li className="py-2 border-b border-slate-500">Settings</li>
-      </ul>
+      
+      <div className="fixed left-5  w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black font-serif">
+  <span className="text-4xl mb-2">{employeeCount}</span>
+  <span className="text-l text-gray-600">Total Employees</span>
+</div>
+    
       <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
         <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
       </button>
