@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.Date;
 
 @Data
@@ -39,4 +40,19 @@ public class Profile {
     @Lob
     @Column(name = "profile_picture")
     private byte[] profilePicture;
-}
+    @Transient
+    public String getProfilePictureBase64() {
+        if (this.profilePicture == null) return null;
+        return Base64.getEncoder().encodeToString(this.profilePicture);
+    }
+
+    @Transient
+    public void setProfilePictureFromBase64(String base64Image) {
+        if (base64Image == null || base64Image.isEmpty()) {
+            this.profilePicture = null;
+            return;
+        }
+        // Remove data URL prefix if present
+        String base64Data = base64Image.split(",")[1];
+        this.profilePicture = Base64.getDecoder().decode(base64Data);
+}}
