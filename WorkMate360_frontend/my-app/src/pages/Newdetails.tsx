@@ -315,7 +315,7 @@ export function Newdetails() {
                   </div>
 
                   <div>
-                    {filesContent.map((file, index) => (
+                    {/* {filesContent.map((file, index) => (
                       <div key={index} className="mt-4">
                         <img
                           src={file.content}
@@ -331,7 +331,9 @@ export function Newdetails() {
                       className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
                     >
                       Upload Profile Picture
-                    </button>
+                    </button> */}
+
+                    
                   </div>
                 </div>
               </div>
