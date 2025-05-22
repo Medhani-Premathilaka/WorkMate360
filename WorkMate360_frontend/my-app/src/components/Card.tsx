@@ -101,7 +101,7 @@ export function Card() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-white rounded-xl shadow-lg overflow-hidden flex flex-col">
+    <div className="  w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
       {/* Search Input */}
       <div className="fixed top-30 right-10">
         <Autocomplete
@@ -128,12 +128,12 @@ export function Card() {
       </div>
 
       {/* Profile Cards */}
-      <div className="p-4h-32 md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+      <div className="w-full  md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {filteredProfiles.length > 0 ? (
           filteredProfiles.map((profile) => (
             <div
               key={profile.index}
-              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full mx-auto max-w-xs"
+              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs"
             >
               <img
                 src={profile.profilePicture || profileimage}
@@ -158,7 +158,7 @@ export function Card() {
                 </p>
               </div>
               <button
-                className="mt-3 bg-slate-700 px-3 py-1 md:px-4 md:py-2 rounded-xl hover:bg-slate-600 text-white w-full text-sm md:text-base"
+                className="mt-3  bg-slate-700 px-3 py-1 md:px-4 md:py-2 rounded-xl hover:bg-slate-600 text-white w-full text-sm md:text-base"
                 onClick={() => navigate(`/details/${profile.index}`)}
               >
                 View Details
