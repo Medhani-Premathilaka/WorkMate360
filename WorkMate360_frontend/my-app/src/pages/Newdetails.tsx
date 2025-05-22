@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Nav } from "@/components/Nav";
 import { useFilePicker } from "use-file-picker";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 interface EmployeeData {
   index: string;
@@ -20,9 +21,13 @@ interface EmployeeData {
   position: string;
   department: string;
   salary: string;
+  imageName: string;
+  imageType: string;
+  imageData: string;
 }
 
 export function Newdetails() {
+  //const [result,setResult] = useState('')
   const [formData, setFormData] = useState<EmployeeData>({
     index: "",
     name: "",
@@ -39,6 +44,9 @@ export function Newdetails() {
     position: "",
     department: "",
     salary: "",
+    imageName: "",
+  imageType: "",
+  imageData: ""
   });
 
   const { openFilePicker, filesContent, clear } = useFilePicker({
@@ -62,9 +70,15 @@ export function Newdetails() {
         throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
-      console.log("Success:", result);
-      alert("Employee added successfully!");
+      const result = await Swal.fire({
+  position: "center",
+  icon: "success",
+  title: "Your work has been saved",
+  showConfirmButton: true,
+  timer: 1500
+});
+ 
+  console.log(result);
 
       setFormData({
         index: "",
@@ -82,6 +96,10 @@ export function Newdetails() {
         department: "",
         salary: "",
         position: "",
+        imageName:"",
+        
+  imageType: "",
+  imageData: "",
       });
       clear();
     } catch (error) {
@@ -117,6 +135,10 @@ export function Newdetails() {
       position: "",
       department: "",
       salary: "",
+      imageName:"",
+        
+  imageType: "",
+  imageData: "",
     });
     clear();
   };
@@ -125,7 +147,7 @@ export function Newdetails() {
     <div className="flex flex-col h-screen">
       <Nav />
       <div className="flex-1  overflow-hidden">
-        <div className="h-full  overflow-y-auto p-10 pt-30 bg-gray-100">
+        <div className="h-full  overflow-y-auto p-4 pt-30 bg-gray-100">
           <div className="  max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden font-serif">
             <form className="p-8" onSubmit={handleSubmit}>
               <h2 className="text-center text-xl font-bold p-8 ">
@@ -215,7 +237,7 @@ export function Newdetails() {
                       name="department"
                       className="w-full h-10 p-2 bg-slate-300 rounded-lg focus:outline-black"
                       onChange={handleChange}
-                      value={formData.gender}
+                      value={formData.department}
                     >
                       <option value="">Select Department</option>
                       <option value="civil">Civil</option>
@@ -314,24 +336,53 @@ export function Newdetails() {
                     </select>
                   </div>
 
-                  <div>
-                    {filesContent.map((file, index) => (
-                      <div key={index} className="mt-4">
+                  <div >
+                    <input type="file" className="bg-slate-200" name="imageName" accept="image/*"/>
+                    {filesContent.length > 0 ? (
+                      <div key={0} className="mt-4">
                         <img
-                          src={file.content}
+                          src={filesContent[0].content}
                           alt="Uploaded profile"
                           className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
                         />
-                        <p className="text-sm text-gray-500 mt-1">{file.name}</p>
+                        <p className="text-sm text-gray-500 mt-1">{filesContent[0].name}</p>
                       </div>
-                    ))}
+                    ) : (
+                      <div className="mt-4">
+                        <img
+                          src={formData.imageData
+                            ? `data:image/png;base64,${formData.imageData}` 
+                            : '/default-avatar.png'}
+                          alt="Current Profile"
+                          className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
+                        <p className="text-sm text-gray-500 mt-1">
+                          {formData.imageData ? "Current Profile" : "No Image Selected"}
+                        </p>
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={() => openFilePicker()}
                       className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
                     >
-                      Upload Profile Picture
+                      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
                     </button>
+                    {filesContent.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => clear()}
+                        className="ml-2 bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
