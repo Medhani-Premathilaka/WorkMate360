@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Nav } from "@/components/Nav";
 import { useFilePicker } from "use-file-picker";
 import axios from "axios";
+import Swal from 'sweetalert2'
 
 interface EmployeeData {
   index: string;
@@ -26,6 +27,7 @@ interface EmployeeData {
 }
 
 export function Newdetails() {
+  //const [result,setResult] = useState('')
   const [formData, setFormData] = useState<EmployeeData>({
     index: "",
     name: "",
@@ -68,9 +70,15 @@ export function Newdetails() {
         throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
-      console.log("Success:", result);
-      alert("Employee added successfully!");
+      const result = await Swal.fire({
+  position: "center",
+  icon: "success",
+  title: "Your work has been saved",
+  showConfirmButton: true,
+  timer: 1500
+});
+ 
+  console.log(result);
 
       setFormData({
         index: "",

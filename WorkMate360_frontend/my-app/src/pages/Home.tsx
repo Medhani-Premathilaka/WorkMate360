@@ -9,17 +9,13 @@ export function Home() {
   return (
     <div>
       <Nav />
-      <div className="absolute top-45 left-64">
+      <div className="fixed top-45 left-64">
         <Card />
       </div>
       {/* <div className="fixed top-40 right-20">
         <Search />
       </div> */}
-      {/* <div className="fixed top-30 right-10">
-        <button className="bg-slate-600 text-white font-serif p-2 px-4 rounded-xl flex justify-middle">
-          <a href="/new"><span className="text-2xl font-medium ">+</span>  New </a>{" "}
-        </button>
-      </div> */}
+      
     </div>
   );
 }

@@ -44,7 +44,16 @@ const handleClickOpen = () => {
   <span className="text-4xl mb-2">{employeeCount}</span>
   <span className="text-l text-gray-600">Total Employees</span>
 </div>
-    
+    <div className="fixed top-70 left-5">
+        <button className="bg-slate-700 text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-slate-300 hover:text-black">
+  <a href="/new" className="flex items-center gap-1">
+    <span className="text-2xl font-medium">+</span>
+    <span className="text-base font-medium">Create New</span>
+  </a>
+</button>
+
+      </div>
+
       <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
         <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
       </button>

@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFilePicker } from "use-file-picker";
 import { toast } from "react-toastify";
+import Swal from 'sweetalert2'
+import profileimage from '../assets/images/profile.png'
 
 interface Profile {
   index: number;
@@ -38,14 +40,39 @@ export function Details() {
     readAs: 'DataURL',
     multiple: false,
   });
+  
 
   const deleteData = async (index: number) => {
     try {
       await axios.delete(`http://localhost:8080/profile/delete/${index}`);
-      toast.success("Deleted successfully");
+      //toast.success("Deleted successfully");
       setProfile(null);
       clear();
-      navigate("/home");
+      const deleteAlert = await Swal.fire({
+  title: 'Are you sure ? Do you want to delete this profile',
+  showDenyButton: true,
+  showCancelButton: false,
+  confirmButtonText: 'Yes',
+  denyButtonText: 'No',
+  customClass: {
+    actions: 'my-actions',
+    cancelButton: 'order-1 right-gap',
+    confirmButton: 'order-2',
+    denyButton: 'order-3',
+  },
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire('Deleted Successfully!','',"success")
+   
+  } else if (result.isDenied) {
+    Swal.fire('Cancelled', '', 'info')
+    
+  }
+})
+console.log(deleteAlert);
+ navigate("/home");
+      
+      
     } catch (error) {
       console.error("Error deleting profile: ", error);
       toast.error("Delete failed");
@@ -77,13 +104,31 @@ export function Details() {
         }
       });
       
-      alert("Profile updated successfully!");
-      clear();
+      const alert = await Swal.fire({
+  title: 'Do you want to save the changes?',
+  showDenyButton: true,
+  showCancelButton: false,
+  confirmButtonText: 'Yes',
+  denyButtonText: 'No',
+  customClass: {
+    actions: 'my-actions',
+    cancelButton: 'order-1 right-gap',
+    confirmButton: 'order-2',
+    denyButton: 'order-3',
+  },
+}).then((result) => {
+  if (result.isConfirmed) {
+    Swal.fire('Profile Updated Successfully!', '', 'success')
+  } else if (result.isDenied) {
+    Swal.fire('Changes are not saved', '', 'info')
+  }
+})
     } catch (error) {
       console.error("Update failed:", error);
       toast.error("Update failed. Check console for details");
     }
   };
+   console.log(alert)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -205,10 +250,10 @@ export function Details() {
                           src={profile.profilePicture 
                             ? `data:image/png;base64,${profile.profilePicture}` 
                             : '/default-avatar.png'}
-                          alt="Current Profile"
+                          
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                            (e.target as HTMLImageElement).src =profileimage ;
                           }}
                         />
                         <p className="text-sm text-gray-500 mt-1">
