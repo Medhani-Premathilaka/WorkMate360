@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import profileimage from "../assets/images/profile.png";
 import { useNavigate } from "react-router-dom";
-import { Search } from "./Search";
+import { Autocomplete, TextField } from "@mui/material";
+import { matchSorter } from 'match-sorter';
 
 const API_URL = "http://localhost:8080/profile/all";
 
@@ -18,7 +19,7 @@ interface Profile {
   gender: string;
   ageNow: number;
   dateOfBirth?: string;
-  profilePicture:string;
+  profilePicture: string;
 }
 
 export function Card() {
@@ -46,8 +47,21 @@ export function Card() {
     fetchAllProfiles();
   }, []);
 
-  const handleSearch = (term: string) => {
+  const fetchProfileByName = async (name: string) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/profile/name`, {
+        params: { name },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching profile by name:", error);
+      return [];
+    }
+  };
+
+  const handleSearch = async (term: string) => {
     setSearchTerm(term);
+
     if (!term.trim()) {
       setFilteredProfiles(profiles);
       return;
@@ -55,10 +69,21 @@ export function Card() {
 
     const searchIndex = parseInt(term);
     if (!isNaN(searchIndex)) {
-      const foundProfile = profiles.find(
-        (profile) => profile.index === searchIndex
-      );
+      const foundProfile = profiles.find((profile) => profile.index === searchIndex);
       setFilteredProfiles(foundProfile ? [foundProfile] : []);
+      return;
+    }
+
+    const lowerCaseTerm = term.toLowerCase();
+    const foundProfiles = profiles.filter((profile) =>
+      profile.name && profile.name.toLowerCase().includes(lowerCaseTerm)
+    );
+
+    if (foundProfiles.length === 0) {
+      const apiResults = await fetchProfileByName(term);
+      setFilteredProfiles(apiResults || []);
+    } else {
+      setFilteredProfiles(foundProfiles);
     }
   };
 
@@ -70,57 +95,70 @@ export function Card() {
     return (
       <div className="text-center p-10 text-red-500">
         {error}
-        <p className="mt-2 text-sm">
-          Ensure the backend is running at {API_URL}
-        </p>
+        <p className="mt-2 text-sm">Ensure the backend is running at {API_URL}</p>
       </div>
     );
   }
 
   return (
-    <div className="fixed left-50 right-50 h-[100vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col ">
-      {/* <h1 className="text-black text-center pt-10 font-bold text-xl">
-        List of Profiles
-      </h1> */}
-
-      {/* Search Component */}
-      <div className="flex justify-end px-5 pt-2 pb-2">
-        <Search onSearch={handleSearch} />
+    <div className="  w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
+      {/* Search Input */}
+      <div className="fixed top-30 right-10">
+        <Autocomplete
+  freeSolo
+  options={profiles.map((profile) => profile.name).filter(Boolean)} // remove nulls
+  getOptionLabel={(option) => option || ""} // ensure fallback
+  inputValue={searchTerm}
+  filterOptions={(options, { inputValue }) =>
+    matchSorter(options, inputValue)
+  }
+  onInputChange={(event, newValue) => {
+    if (typeof newValue === "string") handleSearch(newValue);
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Search profiles"
+      variant="outlined"
+      size="small"
+    />
+  )}
+  className="w-full md:w-64"
+/>
       </div>
 
-      {/* Scrollable content area */}
-      <div className="p-5 pb-50 space-y-4 overflow-y-auto flex-1 pb-24 grid grid-cols-3 gap-4">
+      {/* Profile Cards */}
+      <div className="w-full  md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {filteredProfiles.length > 0 ? (
           filteredProfiles.map((profile) => (
             <div
               key={profile.index}
-              className="flex flex-col  items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-64 "
+              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs"
             >
-              {/* Profile Image (Top) */}
               <img
-  src={profile.profilePicture || profileimage}
-  alt="profile_icon"
-  className="w-20 h-20 object-cover rounded-full mb-3 border-2 border-white"
-/>
-
-              {/* Profile Info (Middle) */}
+                src={profile.profilePicture || profileimage}
+                alt="profile"
+                className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
+              />
               <div className="text-center w-full">
-                <p className="text-gray-900 font-medium text-lg">
+                <p className="text-gray-900 font-medium text-base md:text-lg">
                   {profile.name}
                 </p>
-                <p className="text-gray-700 text-sm font-bold">ID: {profile.index}</p>
+                <p className="text-gray-700 text-xs md:text-sm font-bold">
+                  ID: {profile.index}
+                </p>
                 <p
-                  className="text-gray-700 text-sm truncate"
+                  className="text-gray-700 text-xs md:text-sm truncate"
                   title={profile.email}
                 >
                   {profile.email}
                 </p>
-                <p className="text-gray-700 text-sm">{profile.phoneNumber}</p>
+                <p className="text-gray-700 text-xs md:text-sm">
+                  {profile.phoneNumber}
+                </p>
               </div>
-
-              {/* Action Button (Bottom) */}
               <button
-                className="mt-3 bg-slate-700 px-4 py-2 rounded-xl hover:bg-slate-600 text-white w-full left-50"
+                className="mt-3  bg-slate-700 px-3 py-1 md:px-4 md:py-2 rounded-xl hover:bg-slate-600 text-white w-full text-sm md:text-base"
                 onClick={() => navigate(`/details/${profile.index}`)}
               >
                 View Details
@@ -128,9 +166,9 @@ export function Card() {
             </div>
           ))
         ) : (
-          <div className="text-center text-gray-500 p-10">
+          <div className="col-span-full text-center text-gray-500 p-10">
             {searchTerm
-              ? `No profile found with index ${searchTerm}`
+              ? `No profile found matching "${searchTerm}"`
               : "No profiles available"}
           </div>
         )}
