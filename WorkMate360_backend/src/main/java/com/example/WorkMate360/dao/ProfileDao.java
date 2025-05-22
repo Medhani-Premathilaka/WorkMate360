@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ProfileDao extends JpaRepository<Profile, Integer> {
-     //give
+
+    List<Profile> findByName(String name);
+    //give
 
 }

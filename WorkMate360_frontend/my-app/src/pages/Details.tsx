@@ -22,16 +22,20 @@ interface Profile {
   department: string;
   salary: number;
   position: string;
+  imageName: string;
+  imageType: string;
+  imageData: string;
+
 }
-let name : any = "Undefined";
+
 export function Details() {
   const { index } = useParams<{ index: string }>();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const { openFilePicker, filesContent, clear } = useFilePicker({
-    accept: ".png",
-    readAs: "DataURL",
+    accept: ['.png', '.jpg', '.jpeg'],
+    readAs: 'DataURL',
     multiple: false,
   });
 
@@ -56,16 +60,28 @@ export function Details() {
     }
 
     try {
-      const updatedProfile = {
+      // FIX 1: Proper Base64 handling
+      const base64Data = filesContent[0]?.content.includes(',') 
+        ? filesContent[0].content.split(',')[1] 
+        : filesContent[0]?.content;
+
+      const dataToSend = {
         ...profile,
-        profilePicture: filesContent[0]?.content || profile.profilePicture,
+        profilePicture: base64Data || profile.profilePicture
       };
-      await axios.put(`http://localhost:8080/profile/update`, updatedProfile);
+
+      // FIX 2: Added headers
+      await axios.put(`http://localhost:8080/profile/update`, dataToSend, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
       alert("Profile updated successfully!");
-      navigate(`/details/${profile.index}`);
+      clear();
     } catch (error) {
       console.error("Update failed:", error);
-      toast.error("Update failed. Please try again.");
+      toast.error("Update failed. Check console for details");
     }
   };
 
@@ -96,8 +112,8 @@ export function Details() {
         <div className="h-full overflow-y-auto p-4 pt-30">
           <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl font-serif">
             <form className="p-8" onSubmit={updateData}>
-              <h2 className="text-center text-xl font-bold p-8 ">
-                {profile.name || name}
+              <h2 className="text-center text-xl font-bold p-8">
+                {profile.name}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8">
                 {/* Left Column */}
@@ -106,53 +122,39 @@ export function Details() {
                   <InputField 
                     label="Phone Number"
                     value={profile.phoneNumber}
-                    onChange={(val) =>
-                      setProfile({ ...profile, phoneNumber: val })
-                    }
+                    onChange={(val) => setProfile({...profile, phoneNumber: val})}
                   />
                   <InputField
                     label="District"
                     value={profile.district}
-                    onChange={(val) =>
-                      setProfile({ ...profile, district: val })
-                    }
+                    onChange={(val) => setProfile({...profile, district: val})}
                   />
                   <InputField
                     label="House Number"
                     value={profile.houseNumber}
-                    onChange={(val) =>
-                      setProfile({ ...profile, houseNumber: val })
-                    }
+                    onChange={(val) => setProfile({...profile, houseNumber: val})}
                   />
                   <InputField
                     label="Date Of Birth"
                     type="date"
                     value={profile.dateOfBirth || ""}
-                    onChange={(val) =>
-                      setProfile({ ...profile, dateOfBirth: val })
-                    }
+                    onChange={(val) => setProfile({...profile, dateOfBirth: val})}
                   />
                   <InputField
                     label="Age"
                     value={profile.ageNow.toString()}
-                    onChange={(val) =>
-                      setProfile({ ...profile, ageNow: Number(val) })
-                    }
+                    onChange={(val) => setProfile({...profile, ageNow: Number(val)})}
                   />
                   <SelectField
                     label="Department"
                     value={profile.department}
                     options={["civil", "mechanical", "elec"]}
-                    onChange={(val) =>
-                      setProfile({ ...profile, department: val })
-                    }
+                    onChange={(val) => setProfile({...profile, department: val})}
                   />
                   <InputField
                     label="Position"
                     value={profile.position}
-                    onChange={(val) =>
-                      setProfile({ ...profile, position: val })
-                    }
+                    onChange={(val) => setProfile({...profile, position: val})}
                   />
                 </div>
 
@@ -161,72 +163,75 @@ export function Details() {
                   <InputField
                     label="Email"
                     value={profile.email}
-                    onChange={(val) => setProfile({ ...profile, email: val })}
+                    onChange={(val) => setProfile({...profile, email: val})}
                   />
                   <InputField
                     label="Province"
                     value={profile.province}
-                    onChange={(val) =>
-                      setProfile({ ...profile, province: val })
-                    }
+                    onChange={(val) => setProfile({...profile, province: val})}
                   />
                   <InputField
                     label="Street"
                     value={profile.street}
-                    onChange={(val) => setProfile({ ...profile, street: val })}
+                    onChange={(val) => setProfile({...profile, street: val})}
                   />
                   <InputField
                     label="Country"
                     value={profile.country}
-                    onChange={(val) => setProfile({ ...profile, country: val })}
+                    onChange={(val) => setProfile({...profile, country: val})}
                   />
                   <SelectField
                     label="Gender"
                     value={profile.gender}
                     options={["male", "female"]}
-                    onChange={(val) => setProfile({ ...profile, gender: val })}
+                    onChange={(val) => setProfile({...profile, gender: val})}
                   />
                   <div>
                     {filesContent.length > 0 ? (
-  filesContent.map((file, index) => (
-    <div key={index} className="mt-4">
-      <img
-        src={file.content || "/default-avatar.png"}
-        alt={`Profile ${index}`}
-        className="w-40 h-40 object-cover border rounded-lg"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src = "/default-avatar.png";
-        }}
-      />
-      <p className="text-sm text-gray-500 mt-1 truncate">
-        {file.name}
-      </p>
-    </div>
-  ))
-) : (
-  <div className="mt-4">
-    <img
-      src={profile?.profilePicture 
-           ? `data:image/png;base64,${profile.profilePicture}` 
-           : "/default-avatar.png"}
-      alt="Current Profile"
-      className="w-40 h-40 object-cover border rounded-lg"
-      onError={(e) => {
-        (e.target as HTMLImageElement).src = "/default-avatar.png";
-      }}
-    />
-    <p className="text-sm text-gray-500 mt-1">
-      {profile?.profilePicture ? "Current Profile" : "No Image Selected"}
-    </p>
-  </div>
-)}
+                      <div key={0} className="mt-4">
+                        <img
+                          src={filesContent[0].content}
+                          alt="Uploaded profile"
+                          className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
+                        <p className="text-sm text-gray-500 mt-1">{filesContent[0].name}</p>
+                      </div>
+                    ) : (
+                      <div className="mt-4">
+                        <img
+                          src={profile.profilePicture 
+                            ? `data:image/png;base64,${profile.profilePicture}` 
+                            : '/default-avatar.png'}
+                          alt="Current Profile"
+                          className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
+                        <p className="text-sm text-gray-500 mt-1">
+                          {profile.profilePicture ? "Current Profile" : "No Image Selected"}
+                        </p>
+                      </div>
+                    )}
                     <button
                       type="button"
-                      onClick={openFilePicker}
+                      onClick={() => openFilePicker()}
                       className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
                     >
-                      Upload Profile Picture
+                      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
                     </button>
+                    {filesContent.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => clear()}
+                        className="ml-2 bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -239,7 +244,6 @@ export function Details() {
                 >
                   Delete
                 </button>
-
                 <button
                   type="submit"
                   className="bg-yellow-600 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4"

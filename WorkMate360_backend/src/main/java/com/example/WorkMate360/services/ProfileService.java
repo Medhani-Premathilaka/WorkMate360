@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +19,13 @@ public class ProfileService {
 
     @Autowired
     private ProfileDao profileDao;
+
+    public  Profile addProfile(Profile profile, MultipartFile imageFile) throws IOException {
+        profile.setImageName(imageFile.getOriginalFilename());
+        profile.setImageType(imageFile.getContentType());
+        profile.setImageData(imageFile.getBytes());
+        return profileDao.save(profile);
+    }
 
     public ResponseEntity<List<Profile>> getAllDetails() {
         try {
@@ -79,6 +88,19 @@ public class ProfileService {
 
     public int count() {
         return Math.toIntExact(profileDao.count());
+    }
+
+    public ResponseEntity<Profile> getProfileByName(String name) {
+        try {
+            List<Profile> profiles = profileDao.findByName(name);
+            if (profiles.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(profiles.get(0), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

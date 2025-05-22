@@ -20,6 +20,9 @@ interface EmployeeData {
   position: string;
   department: string;
   salary: string;
+  imageName: string;
+  imageType: string;
+  imageData: string;
 }
 
 export function Newdetails() {
@@ -39,6 +42,9 @@ export function Newdetails() {
     position: "",
     department: "",
     salary: "",
+    imageName: "",
+  imageType: "",
+  imageData: ""
   });
 
   const { openFilePicker, filesContent, clear } = useFilePicker({
@@ -49,68 +55,50 @@ export function Newdetails() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
-        // Prepare the DTO object
-        const profileDTO = {
-            name: formData.name,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
-            province: formData.province,
-            district: formData.district,
-            street: formData.street,
-            houseNumber: formData.houseNumber,
-            gender: formData.gender,
-            ageNow: formData.ageNow ? parseInt(formData.ageNow) : null,
-            dateOfBirth: formData.dateOfBirth,
-            country: formData.country,
-            department: formData.department,
-            salary: formData.salary ? parseFloat(formData.salary) : null,
-            position: formData.position,
-            // Include the Base64 image if available
-            profilePictureBase64: filesContent[0]?.content || null
-        };
+      const response = await fetch("http://localhost:8080/profile/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-        const response = await fetch("http://localhost:8080/profile/add", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(profileDTO),
-        });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
+      const result = await response.json();
+      console.log("Success:", result);
+      alert("Employee added successfully!");
 
-        const result = await response.json();
-        console.log("Success:", result);
-        alert("Employee added successfully!");
-
-        // Reset form
-        setFormData({
-            index: "",
-            name: "",
-            email: "",
-            phoneNumber: "",
-            province: "",
-            district: "",
-            street: "",
-            houseNumber: "",
-            gender: "",
-            ageNow: "",
-            dateOfBirth: "",
-            country: "",
-            department: "",
-            salary: "",
-            position: "",
-        });
-        clear();
+      setFormData({
+        index: "",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        province: "",
+        district: "",
+        street: "",
+        houseNumber: "",
+        gender: "",
+        ageNow: "",
+        dateOfBirth: "",
+        country: "",
+        department: "",
+        salary: "",
+        position: "",
+        imageName:"",
+        
+  imageType: "",
+  imageData: "",
+      });
+      clear();
     } catch (error) {
-        console.error("Error:", error);
-        alert("Error submitting form");
+      console.error("Error:", error);
+      alert("Error submitting form");
     }
-};
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -139,6 +127,10 @@ export function Newdetails() {
       position: "",
       department: "",
       salary: "",
+      imageName:"",
+        
+  imageType: "",
+  imageData: "",
     });
     clear();
   };
@@ -147,7 +139,7 @@ export function Newdetails() {
     <div className="flex flex-col h-screen">
       <Nav />
       <div className="flex-1  overflow-hidden">
-        <div className="h-full  overflow-y-auto p-10 pt-30 bg-gray-100">
+        <div className="h-full  overflow-y-auto p-4 pt-30 bg-gray-100">
           <div className="  max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden font-serif">
             <form className="p-8" onSubmit={handleSubmit}>
               <h2 className="text-center text-xl font-bold p-8 ">
@@ -336,84 +328,54 @@ export function Newdetails() {
                     </select>
                   </div>
 
-                  <div className="space-y-4">
-  {/* Image Preview Section */}
-  {filesContent.length > 0 ? (
-    filesContent.map((file, index) => (
-      <div key={index} className="mt-4 relative">
-        {/* Image with error fallback */}
-        <img
-          src={file.content}
-          alt={`Uploaded profile ${index + 1}`}
-          className="w-40 h-40 object-cover border-2 border-gray-300 rounded-lg"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = '/default-avatar.png';
-            (e.target as HTMLImageElement).className = 
-              'w-40 h-40 object-contain border-2 border-gray-300 rounded-lg bg-gray-100';
-          }}
-        />
-        {/* File info */}
-        <div className="mt-2 flex items-center justify-between">
-          <p className="text-sm text-gray-600 truncate max-w-[160px]">
-            {file.name}
-          </p>
-          <button
-            type="button"
-            onClick={() => clear()}
-            className="text-red-500 hover:text-red-700 text-sm"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    ))
-  ) : (
-    /* Default state when no image is selected */
-    <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6">
-      <svg
-        className="w-12 h-12 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-        />
-      </svg>
-      <p className="mt-2 text-sm text-gray-600">No image selected</p>
-    </div>
-  )}
-
-  {/* Upload Button */}
-  <div className="flex space-x-3">
-    <button
-      type="button"
-      onClick={() => openFilePicker()}
-      className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
-    >
-      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
-    </button>
-    
-    {filesContent.length > 0 && (
-      <button
-        type="button"
-        onClick={() => clear()}
-        className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors"
-      >
-        Remove
-      </button>
-    )}
-  </div>
-
-  {/* Help text */}
-  <p className="text-xs text-gray-500">
-    Recommended: Square image, JPG/PNG, max 2MB
-  </p>
-</div>
+                  <div >
+                    <input type="file" className="bg-slate-200" name="imageName" accept="image/*"/>
+                    {filesContent.length > 0 ? (
+                      <div key={0} className="mt-4">
+                        <img
+                          src={filesContent[0].content}
+                          alt="Uploaded profile"
+                          className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
+                        <p className="text-sm text-gray-500 mt-1">{filesContent[0].name}</p>
+                      </div>
+                    ) : (
+                      <div className="mt-4">
+                        <img
+                          src={formData.imageData
+                            ? `data:image/png;base64,${formData.imageData}` 
+                            : '/default-avatar.png'}
+                          alt="Current Profile"
+                          className="w-40 h-40 object-contain border rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                          }}
+                        />
+                        <p className="text-sm text-gray-500 mt-1">
+                          {formData.imageData ? "Current Profile" : "No Image Selected"}
+                        </p>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => openFilePicker()}
+                      className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
+                    >
+                      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
+                    </button>
+                    {filesContent.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => clear()}
+                        className="ml-2 bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="m-4 p-8 w-full h-auto align-middle flex justify-start">

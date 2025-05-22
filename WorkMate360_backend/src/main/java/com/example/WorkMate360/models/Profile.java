@@ -34,32 +34,14 @@ public class Profile {
     private String Country;
     private String Department;
     private Double Salary;
+    private String imageName;
+    private String imageType;
 
    // private String ProfilePicture;
 
     @Lob
-    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+    private byte[] imageData;
 
-    private byte[] profilePicture;
+    // Helper methods
 
-    // Helper method to handle Base64 strings
-    @Transient
-    public String getProfilePictureBase64() {
-        return this.profilePicture != null ?
-                Base64.getEncoder().encodeToString(this.profilePicture) :
-                null;
-    }
-
-    @Transient
-    public void setProfilePictureFromBase64(String base64Image) {
-        if (base64Image == null || base64Image.isEmpty()) {
-            this.profilePicture = null;
-            return;
-        }
-        // Remove data URL prefix if present
-        String imageData = base64Image.contains(",") ?
-                base64Image.split(",")[1] :
-                base64Image;
-        this.profilePicture = Base64.getDecoder().decode(imageData);
-    }
 }
