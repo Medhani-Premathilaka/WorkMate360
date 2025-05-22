@@ -103,7 +103,7 @@ export function Details() {
                 {/* Left Column */}
                 <div className="space-y-4">
                   <InputField label="Index" value={profile.index} readOnly />
-                  <InputField
+                  <InputField 
                     label="Phone Number"
                     value={profile.phoneNumber}
                     onChange={(val) =>

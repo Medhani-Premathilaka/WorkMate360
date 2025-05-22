@@ -7,70 +7,81 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Base64;
 
+@Getter
+@Setter
 public class ProfileDTO {
-    // Getters and setters for all fields
-    @Setter
-    @Getter
     private Integer index;
-    @Getter
     private String name;
-    @Getter
     private String email;
-    @Getter
     private String phoneNumber;
-    @Getter
     private String province;
-    @Getter
     private String district;
-    @Getter
     private String street;
-    @Getter
     private String houseNumber;
-    @Getter
     private String gender;
-    @Getter
     private LocalDate dateOfBirth;
-    @Getter
     private Integer ageNow;
-    @Getter
     private String position;
-    @Getter
     private String country;
-    @Getter
     private String department;
-    @Getter
     private Double salary;
 
     // Base64 encoded string for the profile picture
-    @Setter
-    @Getter
     private String profilePictureBase64;
 
-    // Constructors
-    public ProfileDTO() {}
-
-    // ... other getters and setters ...
-
-    // Conversion methods
+    // Conversion from Entity to DTO
     public static ProfileDTO fromEntity(Profile profile) {
         ProfileDTO dto = new ProfileDTO();
         dto.setIndex(profile.getIndex());
         dto.setName(profile.getName());
-        // ... set other fields ...
+        dto.setEmail(profile.getEmail());
+        dto.setPhoneNumber(profile.getPhoneNumber());
+        dto.setProvince(profile.getProvince());
+        dto.setDistrict(profile.getDistrict());
+        dto.setStreet(profile.getStreet());
+        dto.setHouseNumber(profile.getHouseNumber());
+        dto.setGender(profile.getGender());
+        dto.setDateOfBirth(profile.getDateOfBirth());
+        dto.setAgeNow(profile.getAgeNow());
+        dto.setPosition(profile.getPosition());
+        dto.setCountry(profile.getCountry());
+        dto.setDepartment(profile.getDepartment());
+        dto.setSalary(profile.getSalary());
 
         if (profile.getProfilePicture() != null) {
-            dto.setProfilePictureBase64(Base64.getEncoder().encodeToString(profile.getProfilePicture()));
+            dto.setProfilePictureBase64(
+                    "data:image/png;base64," +
+                            Base64.getEncoder().encodeToString(profile.getProfilePicture())
+            );
         }
 
         return dto;
     }
 
-    private void setName(String name) {
-    }
-
+    // Conversion from DTO to Entity
     public Profile toEntity() {
-        return null;
+        Profile profile = new Profile();
+        profile.setIndex(this.index);
+        profile.setName(this.name);
+        profile.setEmail(this.email);
+        profile.setPhoneNumber(this.phoneNumber);
+        profile.setProvince(this.province);
+        profile.setDistrict(this.district);
+        profile.setStreet(this.street);
+        profile.setHouseNumber(this.houseNumber);
+        profile.setGender(this.gender);
+        profile.setDateOfBirth(this.dateOfBirth);
+        profile.setAgeNow(this.ageNow);
+        profile.setPosition(this.position);
+        profile.setCountry(this.country);
+        profile.setDepartment(this.department);
+        profile.setSalary(this.salary);
+
+        if (this.profilePictureBase64 != null && this.profilePictureBase64.startsWith("data:")) {
+            String base64Image = this.profilePictureBase64.split(",")[1]; // remove data:image/... prefix
+            profile.setProfilePicture(Base64.getDecoder().decode(base64Image));
+        }
+
+        return profile;
     }
-
-
 }

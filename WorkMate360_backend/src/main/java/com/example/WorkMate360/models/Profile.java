@@ -38,12 +38,16 @@ public class Profile {
    // private String ProfilePicture;
 
     @Lob
-    @Column(name = "profile_picture")
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+
     private byte[] profilePicture;
+
+    // Helper method to handle Base64 strings
     @Transient
     public String getProfilePictureBase64() {
-        if (this.profilePicture == null) return null;
-        return Base64.getEncoder().encodeToString(this.profilePicture);
+        return this.profilePicture != null ?
+                Base64.getEncoder().encodeToString(this.profilePicture) :
+                null;
     }
 
     @Transient
@@ -53,6 +57,9 @@ public class Profile {
             return;
         }
         // Remove data URL prefix if present
-        String base64Data = base64Image.split(",")[1];
-        this.profilePicture = Base64.getDecoder().decode(base64Data);
-}}
+        String imageData = base64Image.contains(",") ?
+                base64Image.split(",")[1] :
+                base64Image;
+        this.profilePicture = Base64.getDecoder().decode(imageData);
+    }
+}
