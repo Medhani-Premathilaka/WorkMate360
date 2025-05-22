@@ -23,7 +23,7 @@ export function Search({ onSearch }: SearchProps) {
       <input 
         type="text" 
         className='outline-black w-100 h-10 rounded-l-xl text-right bg-slate-300 p-2' 
-        placeholder='Search by index...'
+        placeholder='Search by Index or Name'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyPress={handleKeyPress}
