@@ -18,6 +18,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profile_seq")
     @SequenceGenerator(name = "profile_seq", sequenceName = "profile_seq", allocationSize = 1)
     private Integer Index;
+    @Column(name = "name")
     private String Name;
     private String Email;
     private String PhoneNumber;

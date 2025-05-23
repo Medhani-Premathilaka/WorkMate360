@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface ProfileDao extends JpaRepository<Profile, Integer> {
 
+    @Query("SELECT p FROM Profile p WHERE p.Name = :name")
     List<Profile> findByName(String name);
     //give
 
