@@ -44,7 +44,7 @@ export function Details() {
 
   const deleteData = async (index: number) => {
     try {
-      await axios.delete(`http://localhost:8080/profile/delete/${index}`);
+      await axios.delete(`http://localhost:8080/profile/admin/delete/${index}`);
       //toast.success("Deleted successfully");
       setProfile(null);
       clear();
