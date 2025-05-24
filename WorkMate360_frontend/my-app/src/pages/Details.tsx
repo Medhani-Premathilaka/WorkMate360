@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFilePicker } from "use-file-picker";
 import { toast } from "react-toastify";
-import Swal from 'sweetalert2'
-import profileimage from '../assets/images/profile.png'
+import Swal from "sweetalert2";
+import profileimage from "../assets/images/profile.png";
 
 interface Profile {
   index: number;
@@ -27,7 +27,6 @@ interface Profile {
   imageName: string;
   imageType: string;
   imageData: string;
-
 }
 
 export function Details() {
@@ -36,11 +35,10 @@ export function Details() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const { openFilePicker, filesContent, clear } = useFilePicker({
-    accept: ['.png', '.jpg', '.jpeg'],
-    readAs: 'DataURL',
+    accept: [".png", ".jpg", ".jpeg"],
+    readAs: "DataURL",
     multiple: false,
   });
-  
 
   const deleteData = async (index: number) => {
     try {
@@ -49,30 +47,26 @@ export function Details() {
       setProfile(null);
       clear();
       const deleteAlert = await Swal.fire({
-  title: 'Are you sure ? Do you want to delete this profile',
-  showDenyButton: true,
-  showCancelButton: false,
-  confirmButtonText: 'Yes',
-  denyButtonText: 'No',
-  customClass: {
-    actions: 'my-actions',
-    cancelButton: 'order-1 right-gap',
-    confirmButton: 'order-2',
-    denyButton: 'order-3',
-  },
-}).then((result) => {
-  if (result.isConfirmed) {
-    Swal.fire('Deleted Successfully!','',"success")
-   
-  } else if (result.isDenied) {
-    Swal.fire('Cancelled', '', 'info')
-    
-  }
-})
-console.log(deleteAlert);
- navigate("/home");
-      
-      
+        title: "Are you sure ? Do you want to delete this profile",
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Yes",
+        denyButtonText: "No",
+        customClass: {
+          actions: "my-actions",
+          cancelButton: "order-1 right-gap",
+          confirmButton: "order-2",
+          denyButton: "order-3",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Deleted Successfully!", "", "success");
+        } else if (result.isDenied) {
+          Swal.fire("Cancelled", "", "info");
+        }
+      });
+      console.log(deleteAlert);
+      navigate("/home");
     } catch (error) {
       console.error("Error deleting profile: ", error);
       toast.error("Delete failed");
@@ -88,47 +82,47 @@ console.log(deleteAlert);
 
     try {
       // FIX 1: Proper Base64 handling
-      const base64Data = filesContent[0]?.content.includes(',') 
-        ? filesContent[0].content.split(',')[1] 
+      const base64Data = filesContent[0]?.content.includes(",")
+        ? filesContent[0].content.split(",")[1]
         : filesContent[0]?.content;
 
       const dataToSend = {
         ...profile,
-        profilePicture: base64Data || profile.profilePicture
+        profilePicture: base64Data || profile.profilePicture,
       };
 
       // FIX 2: Added headers
       await axios.put(`http://localhost:8080/profile/update`, dataToSend, {
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
+        },
+      });
+
+      const alert = await Swal.fire({
+        title: "Do you want to save the changes?",
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Yes",
+        denyButtonText: "No",
+        customClass: {
+          actions: "my-actions",
+          cancelButton: "order-1 right-gap",
+          confirmButton: "order-2",
+          denyButton: "order-3",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Profile Updated Successfully!", "", "success");
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
         }
       });
-      
-      const alert = await Swal.fire({
-  title: 'Do you want to save the changes?',
-  showDenyButton: true,
-  showCancelButton: false,
-  confirmButtonText: 'Yes',
-  denyButtonText: 'No',
-  customClass: {
-    actions: 'my-actions',
-    cancelButton: 'order-1 right-gap',
-    confirmButton: 'order-2',
-    denyButton: 'order-3',
-  },
-}).then((result) => {
-  if (result.isConfirmed) {
-    Swal.fire('Profile Updated Successfully!', '', 'success')
-  } else if (result.isDenied) {
-    Swal.fire('Changes are not saved', '', 'info')
-  }
-})
     } catch (error) {
       console.error("Update failed:", error);
       toast.error("Update failed. Check console for details");
     }
   };
-   console.log(alert)
+  console.log(alert);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -164,42 +158,56 @@ console.log(deleteAlert);
                 {/* Left Column */}
                 <div className="space-y-4">
                   <InputField label="Index" value={profile.index} readOnly />
-                  <InputField 
+                  <InputField
                     label="Phone Number"
                     value={profile.phoneNumber}
-                    onChange={(val) => setProfile({...profile, phoneNumber: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, phoneNumber: val })
+                    }
                   />
                   <InputField
                     label="District"
                     value={profile.district}
-                    onChange={(val) => setProfile({...profile, district: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, district: val })
+                    }
                   />
                   <InputField
                     label="House Number"
                     value={profile.houseNumber}
-                    onChange={(val) => setProfile({...profile, houseNumber: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, houseNumber: val })
+                    }
                   />
                   <InputField
                     label="Date Of Birth"
                     type="date"
                     value={profile.dateOfBirth || ""}
-                    onChange={(val) => setProfile({...profile, dateOfBirth: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, dateOfBirth: val })
+                    }
                   />
                   <InputField
                     label="Age"
                     value={profile.ageNow.toString()}
-                    onChange={(val) => setProfile({...profile, ageNow: Number(val)})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, ageNow: Number(val) })
+                    }
                   />
                   <SelectField
                     label="Department"
                     value={profile.department}
                     options={["civil", "mechanical", "elec"]}
-                    onChange={(val) => setProfile({...profile, department: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, department: val })
+                    }
                   />
                   <InputField
                     label="Position"
                     value={profile.position}
-                    onChange={(val) => setProfile({...profile, position: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, position: val })
+                    }
                   />
                 </div>
 
@@ -208,28 +216,30 @@ console.log(deleteAlert);
                   <InputField
                     label="Email"
                     value={profile.email}
-                    onChange={(val) => setProfile({...profile, email: val})}
+                    onChange={(val) => setProfile({ ...profile, email: val })}
                   />
                   <InputField
                     label="Province"
                     value={profile.province}
-                    onChange={(val) => setProfile({...profile, province: val})}
+                    onChange={(val) =>
+                      setProfile({ ...profile, province: val })
+                    }
                   />
                   <InputField
                     label="Street"
                     value={profile.street}
-                    onChange={(val) => setProfile({...profile, street: val})}
+                    onChange={(val) => setProfile({ ...profile, street: val })}
                   />
                   <InputField
                     label="Country"
                     value={profile.country}
-                    onChange={(val) => setProfile({...profile, country: val})}
+                    onChange={(val) => setProfile({ ...profile, country: val })}
                   />
                   <SelectField
                     label="Gender"
                     value={profile.gender}
                     options={["male", "female"]}
-                    onChange={(val) => setProfile({...profile, gender: val})}
+                    onChange={(val) => setProfile({ ...profile, gender: val })}
                   />
                   <div>
                     {filesContent.length > 0 ? (
@@ -239,25 +249,31 @@ console.log(deleteAlert);
                           alt="Uploaded profile"
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                            (e.target as HTMLImageElement).src =
+                              "/default-avatar.png";
                           }}
                         />
-                        <p className="text-sm text-gray-500 mt-1">{filesContent[0].name}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {filesContent[0].name}
+                        </p>
                       </div>
                     ) : (
                       <div className="mt-4">
                         <img
-                          src={profile.profilePicture 
-                            ? `data:image/png;base64,${profile.profilePicture}` 
-                            : '/default-avatar.png'}
-                          
+                          src={
+                            profile.profilePicture
+                              ? `data:image/png;base64,${profile.profilePicture}`
+                              : "/default-avatar.png"
+                          }
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src =profileimage ;
+                            (e.target as HTMLImageElement).src = profileimage;
                           }}
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          {profile.profilePicture ? "Current Profile" : "No Image Selected"}
+                          {profile.profilePicture
+                            ? "Current Profile"
+                            : "No Image Selected"}
                         </p>
                       </div>
                     )}
@@ -266,7 +282,9 @@ console.log(deleteAlert);
                       onClick={() => openFilePicker()}
                       className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
                     >
-                      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
+                      {filesContent.length
+                        ? "Change Image"
+                        : "Upload Profile Picture"}
                     </button>
                     {filesContent.length > 0 && (
                       <button

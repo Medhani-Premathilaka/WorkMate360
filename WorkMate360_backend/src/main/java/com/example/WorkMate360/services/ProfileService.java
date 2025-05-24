@@ -5,10 +5,13 @@ import com.example.WorkMate360.models.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +22,47 @@ public class ProfileService {
 
     @Autowired
     private ProfileDao profileDao;
+
+
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
+
+    public Profile createProfileWithCredentials(Profile profile) {
+        // Generate username (firstname.lastname + index)
+        String username = generateUsername(profile.getName(), profile.getIndex());
+        profile.setUsername(username);
+
+        // Generate password (birthday + index)
+        String tempPassword = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+        profile.setTemporaryPassword(passwordEncoder.encode(tempPassword));
+        profile.setPasswordResetRequired(true);
+
+        // Save profile
+        Profile savedProfile = profileDao.save(profile);
+
+        // Send email with credentials
+        emailService.sendCredentialsEmail(
+                profile.getEmail(),
+                username,
+                tempPassword
+        );
+
+        return savedProfile;
+    }
+
+    private String generateUsername(String name, Integer index) {
+        String[] nameParts = name.toLowerCase().split(" ");
+        return nameParts[0] + "." + nameParts[nameParts.length-1] + index;
+    }
+
+    private String generatePassword(LocalDate dob, Integer index) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        return dob.format(formatter) + index;
+    }
 
     public  Profile addProfile(Profile profile, MultipartFile imageFile) throws IOException {
         profile.setImageName(imageFile.getOriginalFilename());

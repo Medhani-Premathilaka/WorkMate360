@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Nav } from "@/components/Nav";
 import { useFilePicker } from "use-file-picker";
 import axios from "axios";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 interface EmployeeData {
   index: string;
@@ -45,8 +45,8 @@ export function Newdetails() {
     department: "",
     salary: "",
     imageName: "",
-  imageType: "",
-  imageData: ""
+    imageType: "",
+    imageData: "",
   });
 
   const { openFilePicker, filesContent, clear } = useFilePicker({
@@ -55,59 +55,138 @@ export function Newdetails() {
     multiple: false,
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:8080/profile/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  //   const handleSubmit = async (e: React.FormEvent) => {
+  //     e.preventDefault();
+  //     try {
+  //       const response = await fetch("http://localhost:8080/profile/add", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(formData),
+  //       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
 
-      const result = await Swal.fire({
-  position: "center",
-  icon: "success",
-  title: "Your work has been saved",
-  showConfirmButton: true,
-  timer: 1500
-});
- 
-  console.log(result);
+  //       const result = await Swal.fire({
+  //   position: "center",
+  //   icon: "success",
+  //   title: "Your work has been saved",
+  //   showConfirmButton: true,
+  //   timer: 1500
+  // });
 
-      setFormData({
-        index: "",
-        name: "",
-        email: "",
-        phoneNumber: "",
-        province: "",
-        district: "",
-        street: "",
-        houseNumber: "",
-        gender: "",
-        ageNow: "",
-        dateOfBirth: "",
-        country: "",
-        department: "",
-        salary: "",
-        position: "",
-        imageName:"",
-        
-  imageType: "",
-  imageData: "",
-      });
-      clear();
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error submitting form");
+  //   console.log(result);
+
+  //       setFormData({
+  //         index: "",
+  //         name: "",
+  //         email: "",
+  //         phoneNumber: "",
+  //         province: "",
+  //         district: "",
+  //         street: "",
+  //         houseNumber: "",
+  //         gender: "",
+  //         ageNow: "",
+  //         dateOfBirth: "",
+  //         country: "",
+  //         department: "",
+  //         salary: "",
+  //         position: "",
+  //         imageName:"",
+
+  //   imageType: "",
+  //   imageData: "",
+  //       });
+  //       clear();
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       alert("Error submitting form");
+  //     }
+  //   };
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  try {
+    // 1. Get and verify JWT token exists
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      throw new Error('Authentication token missing. Please login again.');
     }
-  };
 
+    // 2. Prepare the request payload
+    const payload = {
+      ...formData,
+      imageData: filesContent.length > 0 
+        ? filesContent[0].content.split(',')[1] 
+        : formData.imageData
+    };
+
+    // 3. Make the API call with proper headers
+    const response = await fetch("http://localhost:8080/profile/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    });
+
+    // 4. Handle non-successful responses
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: await response.text() };
+      }
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    // 5. Handle successful response
+    const result = await response.json();
+    
+    await Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Employee added successfully!",
+      showConfirmButton: true,
+      timer: 1500
+    });
+
+    // Reset form
+    setFormData({ /* your reset values */ });
+    clear();
+
+  } catch (error) {
+    let errorMessage = "Failed to add employee";
+    
+    // Handle specific error cases
+    if (error instanceof Error) {
+      if (error.message.includes('403')) {
+        errorMessage = "Access denied. You don't have permission to perform this action.";
+      } else if (error.message.includes('401')) {
+        errorMessage = "Session expired. Please login again.";
+        localStorage.removeItem('jwtToken');
+        // Redirect to login if using React Router
+        // navigate('/login');
+      } else {
+        errorMessage = error.message;
+      }
+    }
+
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: errorMessage,
+      confirmButtonText: "OK",
+    });
+  }
+};
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -135,10 +214,10 @@ export function Newdetails() {
       position: "",
       department: "",
       salary: "",
-      imageName:"",
-        
-  imageType: "",
-  imageData: "",
+      imageName: "",
+
+      imageType: "",
+      imageData: "",
     });
     clear();
   };
@@ -336,8 +415,13 @@ export function Newdetails() {
                     </select>
                   </div>
 
-                  <div >
-                    <input type="file" className="bg-slate-200" name="imageName" accept="image/*"/>
+                  <div>
+                    <input
+                      type="file"
+                      className="bg-slate-200"
+                      name="imageName"
+                      accept="image/*"
+                    />
                     {filesContent.length > 0 ? (
                       <div key={0} className="mt-4">
                         <img
@@ -345,25 +429,33 @@ export function Newdetails() {
                           alt="Uploaded profile"
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                            (e.target as HTMLImageElement).src =
+                              "/default-avatar.png";
                           }}
                         />
-                        <p className="text-sm text-gray-500 mt-1">{filesContent[0].name}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {filesContent[0].name}
+                        </p>
                       </div>
                     ) : (
                       <div className="mt-4">
                         <img
-                          src={formData.imageData
-                            ? `data:image/png;base64,${formData.imageData}` 
-                            : '/default-avatar.png'}
+                          src={
+                            formData.imageData
+                              ? `data:image/png;base64,${formData.imageData}`
+                              : "/default-avatar.png"
+                          }
                           alt="Current Profile"
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/default-avatar.png';
+                            (e.target as HTMLImageElement).src =
+                              "/default-avatar.png";
                           }}
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          {formData.imageData ? "Current Profile" : "No Image Selected"}
+                          {formData.imageData
+                            ? "Current Profile"
+                            : "No Image Selected"}
                         </p>
                       </div>
                     )}
@@ -372,7 +464,9 @@ export function Newdetails() {
                       onClick={() => openFilePicker()}
                       className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
                     >
-                      {filesContent.length ? 'Change Image' : 'Upload Profile Picture'}
+                      {filesContent.length
+                        ? "Change Image"
+                        : "Upload Profile Picture"}
                     </button>
                     {filesContent.length > 0 && (
                       <button
