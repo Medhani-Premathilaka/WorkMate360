@@ -33,7 +33,18 @@ export function Card() {
   useEffect(() => {
     const fetchAllProfiles = async () => {
       try {
-        const response = await axios.get(API_URL);
+        // Get token if you need authentication
+        const token = localStorage.getItem("token");
+        
+        // Configure request with token if available
+        const config = {};
+        if (token) {
+          config.headers = {
+            'Authorization': `Bearer ${token}`
+          };
+        }
+
+        const response = await axios.get(API_URL, config);
         setProfiles(response.data);
         setFilteredProfiles(response.data);
       } catch (error) {
