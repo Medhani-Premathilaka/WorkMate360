@@ -8,6 +8,11 @@ interface LoginCredentials {
   password: string;
 }
 
+interface LoginResponse {
+  token: string;
+  // Add other fields if your backend returns more data
+}
+
 export const Login: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({
     username: '',
@@ -31,25 +36,34 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:8080/login', credentials, {
+      const response = await axios.post<LoginResponse>('http://localhost:8080/login', credentials, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
       
-      // Store the JWT token
-      const token = response.data;
-      localStorage.setItem('jwtToken', token);
+      // Extract token from response properly
+      const token = response.data.token;
+      
+      if (!token) {
+        setError('No token received from server');
+        return;
+      }
+      
+      // Store the JWT token with consistent key
+      localStorage.setItem('token', token);
       
       // Set default Authorization header for future requests
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      console.log('Login successful, token stored');
       
       // Redirect to dashboard
       navigate('/home');
     } catch (err: any) {
       if (err.response) {
         // The request was made and the server responded with a status code
-        setError(err.response.data || 'Invalid username or password');
+        setError(err.response.data?.message || 'Invalid username or password');
       } else if (err.request) {
         // The request was made but no response was received
         setError('No response from server. Please try again.');
@@ -57,6 +71,7 @@ export const Login: React.FC = () => {
         // Something happened in setting up the request
         setError('An error occurred. Please try again.');
       }
+      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }

@@ -1,28 +1,45 @@
 package com.example.WorkMate360.controllers;
 
-
 import com.example.WorkMate360.models.Login;
 import com.example.WorkMate360.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public Login register(@RequestBody  Login user) {
+    public Login register(@RequestBody Login user) {
         return userService.register(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Login user) {
-        // Logic to authenticate the user
-        // For now, just return a success message
-        return userService.verify(user);
+    public ResponseEntity<?> login(@RequestBody Login user) {
+        // Get the JWT token from service
+        String jwtToken = userService.verify(user);
+
+        // Check if authentication was successful
+        if (jwtToken == null || jwtToken.isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid username or password");
+            return ResponseEntity.status(401).body(errorResponse);
+        }
+
+        // Create response with token
+        Map<String, String> response = new HashMap<>();
+        response.put("token", jwtToken);
+
+        return ResponseEntity.ok(response);
     }
 }
