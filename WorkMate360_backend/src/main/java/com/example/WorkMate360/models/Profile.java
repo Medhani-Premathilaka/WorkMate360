@@ -4,6 +4,8 @@ package com.example.WorkMate360.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Base64;
@@ -12,6 +14,8 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "profile")
+@Getter
+@Setter
 public class Profile {
 
     @Id
@@ -42,6 +46,14 @@ public class Profile {
 
     @Lob
     private byte[] imageData;
+
+    @Column(unique = true)
+    private String username;  // Add this field
+
+    private String temporaryPassword;  // Add this field
+
+    private boolean passwordResetRequired = true;
+
 
     // Helper methods
 

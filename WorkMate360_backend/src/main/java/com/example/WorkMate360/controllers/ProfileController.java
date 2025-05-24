@@ -2,12 +2,15 @@ package com.example.WorkMate360.controllers;
 
 import com.example.WorkMate360.dao.ProfileDao;
 
+import com.example.WorkMate360.dto.ChangePasswordRequest;
 import com.example.WorkMate360.models.Profile;
 import com.example.WorkMate360.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +25,10 @@ public class ProfileController {
     ProfileService profileService;
     @Autowired
     private ProfileDao profileDao;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private com.example.WorkMate360.utils.JwtUtil jwtUtil;
 
     @GetMapping("/all")
     public ResponseEntity<List<Profile>> getAllProfiles() {
@@ -43,10 +50,15 @@ public class ProfileController {
     public ResponseEntity<Profile> getProfileByName(@RequestParam String name) {
         return profileService.getProfileByName(name);
     }
-    @PostMapping("/add")
-    public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
-        return profileService.addProfile(profile);
-    }
+//    @PostMapping("/add")
+//    public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+//        return profileService.addProfile(profile);
+//    }
+@PostMapping("/add")
+public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+    Profile savedProfile = profileService.createProfileWithCredentials(profile);
+    return ResponseEntity.ok(savedProfile);
+}
 
     @DeleteMapping("/delete/{index}")
     public ResponseEntity<String> deleteProfile(@PathVariable Integer index) {
@@ -70,6 +82,21 @@ public class ProfileController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @RequestHeader("Authorization") String token,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+        Profile profile = (Profile) profileDao.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        profile.setTemporaryPassword(passwordEncoder.encode(request.getNewPassword()));
+        profile.setPasswordResetRequired(false);
+        profileDao.save(profile);
+
+        return ResponseEntity.ok("Password changed successfully");
     }
 
 
