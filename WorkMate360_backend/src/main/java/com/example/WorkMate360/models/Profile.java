@@ -40,12 +40,8 @@ public class Profile {
     private String Department;
     private Double Salary;
     private String imageName;
-    private String imageType;
-
-   // private String ProfilePicture;
-
-    @Lob
-    private byte[] imageData;
+    private String imageUrl;
+    private Integer ImageId;
 
 
 

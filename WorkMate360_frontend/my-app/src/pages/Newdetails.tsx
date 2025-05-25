@@ -112,31 +112,37 @@ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   
   try {
-    // 1. Get and verify JWT token exists
+    // Get JWT token for authentication
     const token = localStorage.getItem('jwtToken');
     if (!token) {
       throw new Error('Authentication token missing. Please login again.');
     }
 
-    // 2. Prepare the request payload
-    const payload = {
-      ...formData,
-      imageData: filesContent.length > 0 
-        ? filesContent[0].content.split(',')[1] 
-        : formData.imageData
-    };
+    // Create FormData object to handle multipart/form-data
+    const formDataObj = new FormData();
+    
+    // Add profile data as JSON string
+    formDataObj.append('profile', new Blob([JSON.stringify(formData)], {
+      type: 'application/json'
+    }));
+    
+    // Add image file if selected
+    if (filesContent.length > 0) {
+      // Convert base64 to blob
+      const base64Response = await fetch(filesContent[0].content);
+      const blob = await base64Response.blob();
+      formDataObj.append('imageFile', blob, filesContent[0].name);
+    }
 
-    // 3. Make the API call with proper headers
+    // Make API call with FormData
     const response = await fetch("http://localhost:8080/profile/add", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
-      body: JSON.stringify(payload),
+      body: formDataObj,
     });
 
-    // 4. Handle non-successful responses
     if (!response.ok) {
       let errorData;
       try {
@@ -147,7 +153,6 @@ const handleSubmit = async (e: React.FormEvent) => {
       throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
     }
 
-    // 5. Handle successful response
     const result = await response.json();
     
     await Swal.fire({
@@ -159,41 +164,37 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     // Reset form
-          setFormData({
-          index: "",
-          name: "",
-          email: "",
-          phoneNumber: "",
-          province: "",
-          district: "",
-          street: "",
-          houseNumber: "",
-          gender: "",
-          ageNow: "",
-          dateOfBirth: "",
-          country: "",
-          department: "",
-          salary: "",
-          position: "",
-          imageName:"",
-
-    imageType: "",
-    imageData: "",
-        });
+    setFormData({
+      index: "",
+      name: "",
+      email: "",
+      phoneNumber: "",
+      province: "",
+      district: "",
+      street: "",
+      houseNumber: "",
+      gender: "",
+      ageNow: "",
+      dateOfBirth: "",
+      country: "",
+      department: "",
+      salary: "",
+      position: "",
+      imageName: "",
+      imageType: "",
+      imageData: "",
+    });
     clear();
 
   } catch (error) {
     let errorMessage = "Failed to add employee";
     
-    // Handle specific error cases
     if (error instanceof Error) {
       if (error.message.includes('403')) {
         errorMessage = "Access denied. You don't have permission to perform this action.";
       } else if (error.message.includes('401')) {
         errorMessage = "Session expired. Please login again.";
         localStorage.removeItem('jwtToken');
-        // Redirect to login if using React Router
-        // navigate('/login');
       } else {
         errorMessage = error.message;
       }
@@ -436,12 +437,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <input
-                      type="file"
-                      className="bg-slate-200"
-                      name="imageName"
-                      accept="image/*"
-                    />
+                    
                     {filesContent.length > 0 ? (
                       <div key={0} className="mt-4">
                         <img

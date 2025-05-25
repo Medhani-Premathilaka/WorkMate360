@@ -10,7 +10,7 @@ interface LoginCredentials {
 
 interface LoginResponse {
   token: string;
-  // Add other fields if your backend returns more data
+  role : string;// Add other fields if your backend returns more data
 }
 
 export const Login: React.FC = () => {
@@ -42,8 +42,10 @@ export const Login: React.FC = () => {
         }
       });
       
-      // Extract token from response properly
+      // Extract token and role from response properly
       const token = response.data.token;
+      const role = response.data.role;
+      localStorage.setItem("name", response.data.role);
       
       if (!token) {
         setError('No token received from server');
@@ -58,8 +60,13 @@ export const Login: React.FC = () => {
       
       console.log('Login successful, token stored');
       
+      
       // Redirect to dashboard
-      navigate('/home');
+      if (role === 'ADMIN') {
+        navigate('/home');
+      } else if (role === 'USER') {
+        navigate('/user');
+      }
     } catch (err: any) {
       if (err.response) {
         // The request was made and the server responded with a status code

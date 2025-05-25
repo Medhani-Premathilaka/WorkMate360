@@ -16,6 +16,22 @@ import { ThemeProvider } from '@mui/material/styles';
 export function Sidebar() {
 const [open, setOpen] = React.useState(false);
 const [employeeCount, setEmployeeCount] = useState<number>(0);
+const [role, setRole] = useState("");
+const [name, setName] = useState("");
+
+useEffect(() => {
+    const storedName = localStorage.getItem("name");
+    if (storedName) setName(storedName);
+
+    const storedRole = localStorage.getItem("role");
+    console.log(storedName)
+    if (storedRole === "ADMIN") {
+      setRole("ADMIN");
+    } else if (storedRole === "USER") {
+      setRole("USER");
+    }
+  }, []);
+
 const handleClickOpen = () => {
     setOpen(true);
   };
@@ -37,46 +53,65 @@ const handleClickOpen = () => {
   fetchEmployeeCount();
   },[]);
 
+
+
   return (
     <div className="fixed top-25 left-0 w-50 h-[calc(100vh-6rem)] bg-slate-600 text-white p-4 z-50 font-serif">
-      
-      <div className="fixed left-5  w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black font-serif">
-  <span className="text-4xl mb-2">{employeeCount}</span>
-  <span className="text-l text-gray-600">Total Employees</span>
-</div>
-    <div className="fixed top-70 left-5">
-        <button className="bg-slate-700 text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-slate-300 hover:text-black">
-  <a href="/new" className="flex items-center gap-1">
-    <span className="text-2xl font-medium">+</span>
-    <span className="text-base font-medium">Create New</span>
-  </a>
-</button>
+      {role === "ADMIN" || (
+        <>
+          <div className="fixed left-5 w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black font-serif">
+            <span className="text-4xl mb-2">{employeeCount}</span>
+            <span className="text-l text-gray-600">Total Employees</span>
+          </div>
+          <div className="fixed top-70 left-5">
+            <button className="bg-slate-700 text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-slate-300 hover:text-black">
+              <a href="/new" className="flex items-center gap-1">
+                <span className="text-2xl font-medium">+</span>
+                <span className="text-base font-medium">Create New</span>
+              </a>
+            </button>
+          </div>
+          <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
+            <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
+          </button>
+        </>
+      )}
 
-      </div>
+      {role === "USER" && (
+        <>
+          <a
+  href="mailto:workmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
+  className="fixed left-5 w-39 top-32 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
+>
+  Leave Request
+</a>
+          <hr className="fixed left-5 w-39 top-32 border-t border-gray-400" style={{ marginTop: '3.5rem' }} />
+          <button className=' fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl'>Calender</button>
+          
+          <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
+            <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
+          </button>
+        </>
+      )}
 
-      <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
-        <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
-      </button>
-    
       <Dialog open={open} onClose={handleClose}
         aria-labelledby="Logout"
         aria-describedby="Logout-Description" className='rounded-2xl'>
-
-          <DialogTitle id="Logout" >
+        <DialogTitle id="Logout" >
           <span className='font-serif text-slate-700 font-bold'>Logout</span>
         </DialogTitle>
         <DialogContent>
-        <DialogContentText id="Logout-Description">
+          <DialogContentText id="Logout-Description">
             For your account’s security, please confirm you want to Logout.
           </DialogContentText>
-          </DialogContent>
-          <DialogActions>
+        </DialogContent>
+        <DialogActions>
           <Button onClick={handleClose} className='bg-slate-700 hover:bg-slate-300 hover:text-black'>Disagree</Button>
           <Button onClick={handleClose} className='bg-slate-700 hover:bg-slate-300 hover:text-black'>
             <a href="/">Agree</a>
           </Button>
         </DialogActions>
-        </Dialog>
+      </Dialog>
     </div>
   );
 }

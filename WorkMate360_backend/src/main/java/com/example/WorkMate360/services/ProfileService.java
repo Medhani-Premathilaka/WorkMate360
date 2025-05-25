@@ -1,6 +1,8 @@
 package com.example.WorkMate360.services;
 
 import com.example.WorkMate360.dao.ProfileDao;
+import com.example.WorkMate360.dto.CloudinaryResponse;
+import com.example.WorkMate360.models.FileUploadUtil;
 import com.example.WorkMate360.models.Login;
 import com.example.WorkMate360.models.Profile;
 import com.example.WorkMate360.repo.UserRepo;
@@ -34,6 +36,9 @@ public class ProfileService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
 
 
     private String generateUsername(String name, Integer index) {
@@ -46,12 +51,22 @@ public class ProfileService {
         return dob.format(formatter) + index;
     }
 
-    public  Profile addProfile(Profile profile, MultipartFile imageFile) throws IOException {
-        profile.setImageName(imageFile.getOriginalFilename());
-        profile.setImageType(imageFile.getContentType());
-        profile.setImageData(imageFile.getBytes());
-        return profileDao.save(profile);
+//    public  Profile addProfile(Profile profile, MultipartFile imageFile) throws IOException {
+//        profile.setImageName(imageFile.getOriginalFilename());
+//        profile.setImageType(imageFile.getContentType());
+//        profile.setImageData(imageFile.getBytes());
+//        return profileDao.save(profile);
+//    }
+    public void  addProfile(final Integer id, final MultipartFile file ){
+        final Profile profile = profileDao.findById(id).orElseThrow(() -> new RuntimeException("Profile not found with id: " + id));
+        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        profile.setImageUrl(fileName);
+        //profile.setImagePublicId(response.getPublicId());
+        this.profileDao.save(profile);
     }
+
 
     public ResponseEntity<List<Profile>> getAllDetails() {
         try {
