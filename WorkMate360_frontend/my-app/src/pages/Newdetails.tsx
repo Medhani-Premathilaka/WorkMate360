@@ -159,7 +159,27 @@ const handleSubmit = async (e: React.FormEvent) => {
     });
 
     // Reset form
-    setFormData({ /* your reset values */ });
+          setFormData({
+          index: "",
+          name: "",
+          email: "",
+          phoneNumber: "",
+          province: "",
+          district: "",
+          street: "",
+          houseNumber: "",
+          gender: "",
+          ageNow: "",
+          dateOfBirth: "",
+          country: "",
+          department: "",
+          salary: "",
+          position: "",
+          imageName:"",
+
+    imageType: "",
+    imageData: "",
+        });
     clear();
 
   } catch (error) {

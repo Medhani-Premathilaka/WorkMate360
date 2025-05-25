@@ -10,5 +10,6 @@ public interface UserRepo extends JpaRepository<Login, Integer> {
     ;
 
     Login findByUsername(String username);
+
     // Add more methods as needed
 }

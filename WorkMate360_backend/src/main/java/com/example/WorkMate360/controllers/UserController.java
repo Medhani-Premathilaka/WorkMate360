@@ -28,6 +28,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Login user) {
         // Get the JWT token from service
         String jwtToken = userService.verify(user);
+        String role = userService.getUserRole(user.getUsername()); // Default role
 
         // Check if authentication was successful
         if (jwtToken == null || jwtToken.isEmpty()) {
@@ -39,6 +40,7 @@ public class UserController {
         // Create response with token
         Map<String, String> response = new HashMap<>();
         response.put("token", jwtToken);
+        response.put("role", role);
 
         return ResponseEntity.ok(response);
     }
