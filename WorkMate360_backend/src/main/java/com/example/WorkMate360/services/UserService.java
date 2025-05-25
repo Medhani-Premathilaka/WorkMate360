@@ -39,4 +39,13 @@ public class UserService {
             return "Login failed";
         }
     }
+
+    public String getUserRole(String username) {
+        Login user = userRepo.findByUsername(username);
+        if (user != null) {
+            return user.getRole();
+        }
+        return null;
+    }
+
 }

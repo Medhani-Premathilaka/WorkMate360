@@ -47,12 +47,6 @@ public class Profile {
     @Lob
     private byte[] imageData;
 
-    @Column(unique = true)
-    private String username;  // Add this field
-
-    private String temporaryPassword;  // Add this field
-
-    private boolean passwordResetRequired = true;
 
 
     // Helper methods

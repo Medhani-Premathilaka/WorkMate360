@@ -34,4 +34,13 @@ public class EmailService {
         message.setText(emailText);
         mailSender.send(message);
     }
+
+    public void sendEmail(String email, String welcomeToWorkMate360, String s) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+        message.setSubject(welcomeToWorkMate360);
+        message.setText(s);
+        mailSender.send(message);
+    }
 }

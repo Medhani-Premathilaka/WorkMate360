@@ -83,21 +83,21 @@ public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(
-            @RequestHeader("Authorization") String token,
-            @RequestBody ChangePasswordRequest request
-    ) {
-        String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
-        Profile profile = (Profile) profileDao.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        profile.setTemporaryPassword(passwordEncoder.encode(request.getNewPassword()));
-        profile.setPasswordResetRequired(false);
-        profileDao.save(profile);
-
-        return ResponseEntity.ok("Password changed successfully");
-    }
+//    @PostMapping("/change-password")
+//    public ResponseEntity<?> changePassword(
+//            @RequestHeader("Authorization") String token,
+//            @RequestBody ChangePasswordRequest request
+//    ) {
+//        String username = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+//        Profile profile = (Profile) profileDao.findByUsername(username)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//
+//        profile.setTemporaryPassword(passwordEncoder.encode(request.getNewPassword()));
+//        profile.setPasswordResetRequired(false);
+//        profileDao.save(profile);
+//
+//        return ResponseEntity.ok("Password changed successfully");
+//    }
 
 
 }

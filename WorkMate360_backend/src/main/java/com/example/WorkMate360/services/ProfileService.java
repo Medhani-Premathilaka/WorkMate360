@@ -1,7 +1,9 @@
 package com.example.WorkMate360.services;
 
 import com.example.WorkMate360.dao.ProfileDao;
+import com.example.WorkMate360.models.Login;
 import com.example.WorkMate360.models.Profile;
+import com.example.WorkMate360.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,8 @@ public class ProfileService {
     @Autowired
     private ProfileDao profileDao;
 
-
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -31,28 +34,7 @@ public class ProfileService {
     @Autowired
     private EmailService emailService;
 
-    public Profile createProfileWithCredentials(Profile profile) {
-        // Generate username (firstname.lastname + index)
-        String username = generateUsername(profile.getName(), profile.getIndex());
-        profile.setUsername(username);
 
-        // Generate password (birthday + index)
-        String tempPassword = generatePassword(profile.getDateOfBirth(), profile.getIndex());
-        profile.setTemporaryPassword(passwordEncoder.encode(tempPassword));
-        profile.setPasswordResetRequired(true);
-
-        // Save profile
-        Profile savedProfile = profileDao.save(profile);
-
-        // Send email with credentials
-        emailService.sendCredentialsEmail(
-                profile.getEmail(),
-                username,
-                tempPassword
-        );
-
-        return savedProfile;
-    }
 
     private String generateUsername(String name, Integer index) {
         String[] nameParts = name.toLowerCase().split(" ");
@@ -145,6 +127,45 @@ public class ProfileService {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public Profile createProfileWithCredentials(Profile profile) {
+        try {
+            // Generate username and password
+            String username = generateUsername(profile.getName(), profile.getIndex());
+            String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+
+            // Set the generated username and password
+            profile.setEmail(username);
+            profile.setPhoneNumber(passwordEncoder.encode(password));
+
+            // Save the profile
+            Profile savedProfile = profileDao.save(profile);
+
+            // Create a Login object
+            Login login = new Login();
+            login.setUsername(username);
+            login.setPassword(password);
+            login.setRole("USER");
+            login.setProfile(savedProfile);
+
+            // Save the login credentials (assuming you have a LoginDao)
+            // loginDao.save(login);
+
+            // Send email notification
+            emailService.sendEmail(savedProfile.getEmail(), "Welcome to WorkMate360",
+                    "Your account has been created. Username: " + username + ", Password: " + password);
+
+            return savedProfile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    // In your service class that needs the profile data:
+    public Profile getProfileByUsername(String username) {
+        Login login = userRepo.findByUsername(username);
+        return login != null ? login.getProfile() : null;
     }
 }
 
