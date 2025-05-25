@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5174")
 @RequestMapping("/profile")
 public class ProfileController {
 
@@ -54,9 +54,26 @@ public class ProfileController {
 //    public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
 //        return profileService.addProfile(profile);
 //    }
-@PostMapping("/add")
-public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+//@PostMapping("/add")
+//public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+//    Profile savedProfile = profileService.createProfileWithCredentials(profile);
+//    return ResponseEntity.ok(savedProfile);
+//}
+@PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public ResponseEntity<Profile> addProfile(
+        @RequestPart("profile") Profile profile,
+        @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+
+    // First save the profile to get its ID
     Profile savedProfile = profileService.createProfileWithCredentials(profile);
+
+    // If an image file was provided, update the profile with the image
+    if (imageFile != null && !imageFile.isEmpty()) {
+        profileService.addProfile(savedProfile.getIndex(), imageFile);
+        // Refresh the profile data after image upload
+        savedProfile = profileDao.findById(savedProfile.getIndex()).orElse(savedProfile);
+    }
+
     return ResponseEntity.ok(savedProfile);
 }
 
@@ -72,17 +89,17 @@ public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
     }
 
 
-    @PostMapping(value = "/addProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addProfile(
-            @RequestPart("profile") Profile profile,
-            @RequestPart("imageFile") MultipartFile imageFile) {
-        try {
-            Profile savedProfile = profileService.addProfile(profile, imageFile);
-            return new ResponseEntity<>(savedProfile, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping(value = "/addProfile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<?> addProfile(
+//            @RequestPart("profile") Profile profile,
+//            @RequestPart("imageFile") MultipartFile imageFile) {
+//        try {
+//            Profile savedProfile = profileService.addProfile(id, imageFile);
+//            return new ResponseEntity<>(savedProfile, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 //    @PostMapping("/change-password")
 //    public ResponseEntity<?> changePassword(
 //            @RequestHeader("Authorization") String token,
