@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
 import { matchSorter } from 'match-sorter';
 
-const API_URL = "http://localhost:8080/profile/all";
+
 
 interface Profile {
   index: number;
@@ -31,32 +31,32 @@ export function Card() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchAllProfiles = async () => {
-      try {
-        // Get token if you need authentication
-        const token = localStorage.getItem("token");
-        
-        // Configure request with token if available
-        const config = {};
-        if (token) {
-          config.headers = {
-            'Authorization': `Bearer ${token}`
-          };
-        }
-
-        const response = await axios.get(API_URL, config);
-        setProfiles(response.data);
-        setFilteredProfiles(response.data);
-      } catch (error) {
-        console.error("Error fetching profiles:", error);
-        setError("Failed to load profiles. Please check console for details.");
-      } finally {
-        setLoading(false);
+  const fetchAllProfiles = async () => {
+    try {
+      // Get token if you need authentication
+      const token = localStorage.getItem("token");
+      
+      // Configure request with token if available
+      const config: any = {};
+      if (token) {
+        config.headers = {
+          'Authorization': `Bearer ${token}`
+        };
       }
-    };
 
-    fetchAllProfiles();
-  }, []);
+      const response = await axios.get(`http://localhost:8080/profile/all`, config);
+      setProfiles(response.data);
+      setFilteredProfiles(response.data);
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+      setError("Failed to load profiles. Please check console for details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllProfiles();
+}, []);
 
   const fetchProfileByName = async (name: string) => {
     try {
@@ -106,7 +106,7 @@ export function Card() {
     return (
       <div className="text-center p-10 text-red-500">
         {error}
-        <p className="mt-2 text-sm">Ensure the backend is running at {API_URL}</p>
+        <p className="mt-2 text-sm">Ensure the backend is running at {`http://localhost:8080/profile/all`}</p>
       </div>
     );
   }

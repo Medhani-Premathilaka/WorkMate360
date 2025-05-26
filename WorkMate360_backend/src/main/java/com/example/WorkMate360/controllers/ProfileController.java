@@ -4,6 +4,7 @@ import com.example.WorkMate360.dao.ProfileDao;
 
 import com.example.WorkMate360.dto.ChangePasswordRequest;
 import com.example.WorkMate360.models.Profile;
+import com.example.WorkMate360.services.JWTService;
 import com.example.WorkMate360.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RequestMapping("/profile")
 public class ProfileController {
 
@@ -28,7 +29,7 @@ public class ProfileController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private com.example.WorkMate360.utils.JwtUtil jwtUtil;
+    private JWTService jwtUtil;
 
     @GetMapping("/all")
     public ResponseEntity<List<Profile>> getAllProfiles() {
@@ -64,6 +65,7 @@ public ResponseEntity<Profile> addProfile(
         @RequestPart("profile") Profile profile,
         @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
 
+try{
     Profile savedProfile = profileService.createProfileWithCredentials(profile, imageFile);
 
     if (savedProfile != null) {
@@ -72,6 +74,11 @@ public ResponseEntity<Profile> addProfile(
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(null);
     }
+}catch (Exception e){
+    e.printStackTrace();
+    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+}
+
 }
 
     @DeleteMapping("/delete/{index}")

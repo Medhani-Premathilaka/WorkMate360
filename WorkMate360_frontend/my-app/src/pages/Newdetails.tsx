@@ -28,6 +28,23 @@ interface EmployeeData {
 
 export function Newdetails() {
   //const [result,setResult] = useState('')
+  const [previewUrl, setPreviewUrl] = useState(null);
+   const [imageFile, setImageFile] = useState(null);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+    
+    // Create preview
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
   const [formData, setFormData] = useState<EmployeeData>({
     index: "",
     name: "",
@@ -127,13 +144,15 @@ const handleSubmit = async (e: React.FormEvent) => {
     }));
     
     // Add image file if selected
-    if (filesContent.length > 0) {
-      // Convert base64 to blob
-      const base64Response = await fetch(filesContent[0].content);
-      const blob = await base64Response.blob();
-      formDataObj.append('imageFile', blob, filesContent[0].name);
-    }
-
+    // if (filesContent.length > 0) {
+    //   // Convert base64 to blob
+    //   const base64Response = await fetch(filesContent[0].content);
+    //   const blob = await base64Response.blob();
+    //   formDataObj.append('imageFile', blob, filesContent[0].name);
+    // }
+    if (imageFile) {
+        formDataObj.append('imageFile', imageFile);
+      }
     // Make API call with FormData
     const response = await fetch("http://localhost:8080/profile/add", {
       method: "POST",
@@ -437,8 +456,28 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    
-                    {filesContent.length > 0 ? (
+                    <div className="image-upload-section">
+            <div className="form-group">
+              <label htmlFor="profileImage">Profile Image</label>
+              <input
+                type="file"
+                id="profileImage"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="file-input"
+              />
+              <div className="image-preview-container">
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Preview" className="image-preview" />
+                ) : (
+                  <div className="no-image">No image selected</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+                    <div>
+                    {/* {filesContent.length > 0 ? (
                       <div key={0} className="mt-4">
                         <img
                           src={filesContent[0].content}
@@ -492,7 +531,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       >
                         Remove
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -516,5 +555,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       </div>
     </div>
+    
   );
 }

@@ -44,17 +44,20 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/profile/all").permitAll()
-                        .requestMatchers("/profile/add").permitAll()
+                                .requestMatchers("/profile/add").permitAll()
+
                         .requestMatchers(
 
                                 "/profile/details/**",
-                                "/profile/count",
+                                "/profile/all",
                                 "/profile/name",
                                 "/profile/delete/**",
-                                "/profile/update"
+                                "/profile/update",
+                                "/profile/count"
                         ).permitAll()
+                         // All other requests require authentication
                 )
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

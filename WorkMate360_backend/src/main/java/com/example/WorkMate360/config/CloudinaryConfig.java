@@ -3,11 +3,13 @@ package com.example.WorkMate360.config;
 import com.cloudinary.Cloudinary;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class CloudinaryConfig {
     @Bean
     public Cloudinary cloudinary() {
