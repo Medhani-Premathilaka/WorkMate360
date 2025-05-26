@@ -64,17 +64,14 @@ public ResponseEntity<Profile> addProfile(
         @RequestPart("profile") Profile profile,
         @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
 
-    // First save the profile to get its ID
-    Profile savedProfile = profileService.createProfileWithCredentials(profile);
+    Profile savedProfile = profileService.createProfileWithCredentials(profile, imageFile);
 
-    // If an image file was provided, update the profile with the image
-    if (imageFile != null && !imageFile.isEmpty()) {
-        profileService.addProfile(savedProfile.getIndex(), imageFile);
-        // Refresh the profile data after image upload
-        savedProfile = profileDao.findById(savedProfile.getIndex()).orElse(savedProfile);
+    if (savedProfile != null) {
+        return ResponseEntity.ok(savedProfile);
+    } else {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
     }
-
-    return ResponseEntity.ok(savedProfile);
 }
 
     @DeleteMapping("/delete/{index}")
