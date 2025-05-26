@@ -144,7 +144,7 @@ public class ProfileService {
         }
     }
 
-    public Profile createProfileWithCredentials(Profile profile) {
+    public Profile createProfileWithCredentials(Profile profile, MultipartFile imageFile) {
         try {
             // Generate username and password
             String username = generateUsername(profile.getName(), profile.getIndex());
@@ -165,11 +165,11 @@ public class ProfileService {
             login.setProfile(savedProfile);
 
             // Save the login credentials (assuming you have a LoginDao)
-            // loginDao.save(login);
+             userRepo.save(login);
 
-            // Send email notification
-            emailService.sendEmail(savedProfile.getEmail(), "Welcome to WorkMate360",
-                    "Your account has been created. Username: " + username + ", Password: " + password);
+
+            // Send email with raw password (not encoded)
+            emailService.sendCredentialsEmail(savedProfile.getEmail(), username, password);
 
             return savedProfile;
         } catch (Exception e) {
