@@ -25,7 +25,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    @Value("${jwt.secret:defaultSecretKeyThatIsAtLeast32BytesLong}")
+
     private String secretKey;
     private SecretKey key;
     // Replace with your actual secret key
@@ -51,9 +51,9 @@ public class JWTService {
     @PostConstruct
     public void init() {
         try {
-//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-//            SecretKey secretKeyObj = keyGen.generateKey();
-//            secretKey = Base64.getEncoder().encodeToString(secretKeyObj.getEncoded());
+            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+            SecretKey secretKeyObj = keyGen.generateKey();
+            secretKey = Base64.getEncoder().encodeToString(secretKeyObj.getEncoded());
             key = (SecretKey) getKey();
         } catch (Exception e) {
             e.printStackTrace();

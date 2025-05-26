@@ -2,7 +2,6 @@ import { Nav } from "@/components/Nav";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useFilePicker } from "use-file-picker";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import profileimage from "../assets/images/profile.png";
@@ -25,8 +24,8 @@ interface Profile {
   salary: number;
   position: string;
   imageName: string;
-  imageid: string;
-  
+  imageId: string;
+  imageUrl: string
 }
 
 export function Details() {
@@ -34,42 +33,69 @@ export function Details() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const { openFilePicker, filesContent, clear } = useFilePicker({
-    accept: [".png", ".jpg", ".jpeg"],
-    readAs: "DataURL",
-    multiple: false,
-  });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setSelectedFile(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "workmate360");
+    data.append("cloud_name", "dg9elczll");
+
+    try {
+      const res = await fetch("https://api.cloudinary.com/v1_1/dg9elczll/image/upload", {
+        method: "POST",
+        body: data,
+      });
+      const uploadedImage = await res.json();
+      return uploadedImage.secure_url;
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      throw new Error("Image upload failed");
+    }
+  };
 
   const deleteData = async (index: number) => {
-    try {
-      await axios.delete(`http://localhost:8080/profile/admin/delete/${index}`);
-      //toast.success("Deleted successfully");
-      setProfile(null);
-      clear();
-      const deleteAlert = await Swal.fire({
-        title: "Are you sure ? Do you want to delete this profile",
-        showDenyButton: true,
-        showCancelButton: false,
-        confirmButtonText: "Yes",
-        denyButtonText: "No",
-        customClass: {
-          actions: "my-actions",
-          cancelButton: "order-1 right-gap",
-          confirmButton: "order-2",
-          denyButton: "order-3",
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire("Deleted Successfully!", "", "success");
-        } else if (result.isDenied) {
-          Swal.fire("Cancelled", "", "info");
-        }
-      });
-      console.log(deleteAlert);
-      navigate("/home");
-    } catch (error) {
-      console.error("Error deleting profile: ", error);
-      toast.error("Delete failed");
+    const result = await Swal.fire({
+      title: "Are you sure? Do you want to delete this profile?",
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: "Yes",
+      denyButtonText: "No",
+      customClass: {
+        actions: "my-actions",
+        cancelButton: "order-1 right-gap",
+        confirmButton: "order-2",
+        denyButton: "order-3",
+      },
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`http://localhost:8080/profile/delete/${index}`);
+        setProfile(null);
+        Swal.fire("Deleted Successfully!", "", "success");
+        navigate("/home");
+      } catch (error) {
+        console.error("Error deleting profile: ", error);
+        toast.error("Delete failed");
+      }
+    } else if (result.isDenied) {
+      Swal.fire("Cancelled", "", "info");
     }
   };
 
@@ -81,24 +107,37 @@ export function Details() {
     }
 
     try {
-      // FIX 1: Proper Base64 handling
-      const base64Data = filesContent[0]?.content.includes(",")
-        ? filesContent[0].content.split(",")[1]
-        : filesContent[0]?.content;
+      let imageUrl = profile.imageUrl;
 
-      const dataToSend = {
+      // Upload new image if selected
+      if (selectedFile) {
+        try {
+          imageUrl = await uploadImage(selectedFile);
+        } catch (error) {
+          toast.error("Failed to upload image");
+          return;
+        }
+      }
+
+      // Prepare the updated profile data
+      const updatedProfile = {
         ...profile,
-        profilePicture: base64Data || profile.profilePicture,
+        imageUrl: imageUrl,
       };
 
-      // FIX 2: Added headers
-      await axios.put(`http://localhost:8080/profile/update`, dataToSend, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // Send the update request
+      const response = await axios.put(
+        `http://localhost:8080/profile/update`,
+        updatedProfile,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const alert = await Swal.fire({
+      // Show success message
+      const result = await Swal.fire({
         title: "Do you want to save the changes?",
         showDenyButton: true,
         showCancelButton: false,
@@ -110,19 +149,22 @@ export function Details() {
           confirmButton: "order-2",
           denyButton: "order-3",
         },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire("Profile Updated Successfully!", "", "success");
-        } else if (result.isDenied) {
-          Swal.fire("Changes are not saved", "", "info");
-        }
       });
+
+      if (result.isConfirmed) {
+        Swal.fire("Profile Updated Successfully!", "", "success");
+        // Update local state with the new image URL
+        setProfile(updatedProfile);
+        setImagePreview(null);
+        setSelectedFile(null);
+      } else if (result.isDenied) {
+        Swal.fire("Changes are not saved", "", "info");
+      }
     } catch (error) {
       console.error("Update failed:", error);
       toast.error("Update failed. Check console for details");
     }
   };
-  console.log(alert);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -138,7 +180,6 @@ export function Details() {
       }
     };
     fetchProfile();
-    return () => clear();
   }, [index]);
 
   if (loading) return <div>Loading...</div>;
@@ -241,60 +282,37 @@ export function Details() {
                     options={["Male", "Female"]}
                     onChange={(val) => setProfile({ ...profile, gender: val })}
                   />
-                  <div>
-                    {filesContent.length > 0 ? (
-                      <div key={0} className="mt-4">
+                  
+                  {/* Image Upload Section */}
+                  <div className="mt-4">
+                    <input 
+                      type="file" 
+                      className="file-input" 
+                      onChange={handleFileChange} 
+                      accept="image/*"
+                    />
+                    
+                    <div className="mt-4">
+                      {imagePreview ? (
                         <img
-                          src={filesContent[0].content}
-                          alt="Uploaded profile"
+                          src={imagePreview}
+                          alt="New profile preview"
                           className="w-40 h-40 object-contain border rounded-lg"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "/default-avatar.png";
-                          }}
                         />
-                        <p className="text-sm text-gray-500 mt-1">
-                          {filesContent[0].name}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="mt-4">
+                      ) : (
                         <img
-                          src={
-                            profile.profilePicture
-                              ? `data:image/png;base64,${profile.profilePicture}`
-                              : "/default-avatar.png"
-                          }
+                          src={profile.imageUrl  || profileimage}
+                          alt="Current profile"
                           className="w-40 h-40 object-contain border rounded-lg"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = profileimage;
                           }}
                         />
-                        <p className="text-sm text-gray-500 mt-1">
-                          {profile.profilePicture
-                            ? "Current Profile"
-                            : "No Image Selected"}
-                        </p>
-                      </div>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => openFilePicker()}
-                      className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
-                    >
-                      {filesContent.length
-                        ? "Change Image"
-                        : "Upload Profile Picture"}
-                    </button>
-                    {filesContent.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => clear()}
-                        className="ml-2 bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
-                      >
-                        Remove
-                      </button>
-                    )}
+                      )}
+                      <p className="text-sm text-gray-500 mt-1">
+                        {imagePreview ? "New Image Preview" : "Current Profile"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -322,7 +340,7 @@ export function Details() {
   );
 }
 
-// Reusable InputField
+// Reusable InputField component
 const InputField = ({
   label,
   value,
@@ -348,7 +366,7 @@ const InputField = ({
   </div>
 );
 
-// Reusable SelectField
+// Reusable SelectField component
 const SelectField = ({
   label,
   value,

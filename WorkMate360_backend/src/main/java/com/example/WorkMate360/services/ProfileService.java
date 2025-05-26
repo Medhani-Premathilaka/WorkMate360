@@ -96,6 +96,7 @@ public class ProfileService {
         try {
             if (profileDao.existsById(index)) {
                 profileDao.deleteById(index);
+                userRepo.deleteById(index);
                 return new ResponseEntity<>("Profile deleted successfully", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Profile not found", HttpStatus.NOT_FOUND);
@@ -111,6 +112,7 @@ public class ProfileService {
             if (!profileDao.existsById(profile.getIndex())) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+
             Profile updated = profileDao.save(profile);
             return new ResponseEntity<>(updated, HttpStatus.OK);
         } catch (Exception e) {

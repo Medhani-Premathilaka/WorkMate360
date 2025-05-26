@@ -48,10 +48,10 @@ public class SecurityConfig {
 
                         .requestMatchers(
 
-                                "/profile/details/**",
+                                "/profile/details/{index}",
                                 "/profile/all",
                                 "/profile/name",
-                                "/profile/delete/**",
+                                "/profile/delete/{index}",
                                 "/profile/update",
                                 "/profile/count"
                         ).permitAll()
