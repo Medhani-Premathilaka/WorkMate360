@@ -19,7 +19,7 @@ interface Profile {
   gender: string;
   ageNow: number;
   dateOfBirth?: string;
-  profilePicture: string;
+  imageUrl: string;
 }
 
 export function Card() {
@@ -147,7 +147,7 @@ export function Card() {
               className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs"
             >
               <img
-                src={profile.profilePicture || profileimage}
+                src={profile.imageUrl || profileimage}
                 alt="profile"
                 className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
               />

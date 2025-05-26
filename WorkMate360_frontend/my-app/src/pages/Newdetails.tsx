@@ -16,14 +16,14 @@ interface EmployeeData {
   gender: string;
   ageNow: string;
   dateOfBirth: string;
-  profilePicture?: string;
+  
   country: string;
   position: string;
   department: string;
   salary: string;
   imageName: string;
-  imageType: string;
-  imageData: string;
+  imageUrl : string;
+  imageId : string;
 }
 
 export function Newdetails() {
