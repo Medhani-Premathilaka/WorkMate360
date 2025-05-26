@@ -57,7 +57,7 @@ const handleClickOpen = () => {
 
   return (
     <div className="fixed top-25 left-0 w-50 h-[calc(100vh-6rem)] bg-slate-600 text-white p-4 z-50 font-serif">
-      {role === "ADMIN" || (
+      {role === "ADMIN" && (
         <>
           <div className="fixed left-5 w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black font-serif">
             <span className="text-4xl mb-2">{employeeCount}</span>

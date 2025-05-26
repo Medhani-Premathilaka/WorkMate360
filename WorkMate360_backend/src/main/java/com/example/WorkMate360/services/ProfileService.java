@@ -57,15 +57,7 @@ public class ProfileService {
 //        profile.setImageData(imageFile.getBytes());
 //        return profileDao.save(profile);
 //    }
-    public void  addProfile(final Integer id, final MultipartFile file ){
-        final Profile profile = profileDao.findById(id).orElseThrow(() -> new RuntimeException("Profile not found with id: " + id));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
-        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
-        profile.setImageUrl(fileName);
-        //profile.setImagePublicId(response.getPublicId());
-        this.profileDao.save(profile);
-    }
+
 
 
     public ResponseEntity<List<Profile>> getAllDetails() {
@@ -150,9 +142,21 @@ public class ProfileService {
             String username = generateUsername(profile.getName(), profile.getIndex());
             String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
 
+
             // Set the generated username and password
             profile.setEmail(username);
             profile.setPhoneNumber(passwordEncoder.encode(password));
+
+            // Upload image to Cloudinary if provided
+            if (imageFile != null && !imageFile.isEmpty()) {
+                FileUploadUtil.assertAllowed(imageFile, FileUploadUtil.IMAGE_PATTERN);
+                final String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
+                final CloudinaryResponse response = this.cloudinaryService.uploadFile(imageFile, fileName);
+                // Set the URL from Cloudinary response, not just the filename
+                profile.setImageUrl(response.getUrl());
+            }else{
+                return null;
+            }
 
             // Save the profile
             Profile savedProfile = profileDao.save(profile);
@@ -176,6 +180,15 @@ public class ProfileService {
             e.printStackTrace();
             return null;
         }
+    }
+    public void  addProfile(final Integer id, final MultipartFile file ){
+        final Profile profile = profileDao.findById(id).orElseThrow(() -> new RuntimeException("Profile not found with id: " + id));
+        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        profile.setImageUrl(fileName);
+        //profile.setImagePublicId(response.getPublicId());
+        this.profileDao.save(profile);
     }
     // In your service class that needs the profile data:
     public Profile getProfileByUsername(String username) {

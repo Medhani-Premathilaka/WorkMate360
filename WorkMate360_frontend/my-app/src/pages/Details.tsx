@@ -25,8 +25,8 @@ interface Profile {
   salary: number;
   position: string;
   imageName: string;
-  imageType: string;
-  imageData: string;
+  imageid: string;
+  
 }
 
 export function Details() {
