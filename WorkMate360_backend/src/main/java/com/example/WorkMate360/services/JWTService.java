@@ -25,7 +25,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    @Value("${jwt.secret}")
+    //@Value("${jwt.secret}")
     private String secretKey;
     private SecretKey key;
     // Replace with your actual secret key
@@ -73,14 +73,14 @@ public class JWTService {
         Map<String, Object> claims = new HashMap<>();
         //claims.put("username", username);
         claims.put("role", role);
-
+        System.out.println(role);
         
         return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() *60 *60 *24))
+                .expiration(new Date(System.currentTimeMillis()+ 1000 *60 *60 *24))
                 .and()
                 .signWith(getKey())
                 .compact();

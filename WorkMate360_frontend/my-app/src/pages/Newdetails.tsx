@@ -176,15 +176,8 @@ export function Newdetails() {
   }
 
   try {
-    const token = localStorage.getItem("jwtToken");
-    if (!token) throw new Error("Authentication token missing");
-
-    await axios.post("http://localhost:8080/profile/add", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      });
+    
+    const response = await axios.post("http://localhost:8080/profile/add", formData);
 
       await Swal.fire({
         position: "center",
@@ -199,14 +192,40 @@ export function Newdetails() {
       navigate("/home");
     } catch (error) {
       console.error("Submission error:", error);
-      let errorMessage = "Failed to add employee";
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+      //let errorMessage = "Failed to add employee";
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 403) {
+        // Handle permission/authorization errors
+        Swal.fire({
+          title: "Permission Denied",
+          text: "You don't have permission to add employees. Please login with an admin account.",
+          icon: "error",
+          confirmButtonText: "Login Again"
+        }).then(() => {
+          localStorage.removeItem("jwtToken"); // Clear invalid token
+          navigate("/login");
+        });
+      } else if (error.response?.status === 401) {
+        // Handle authentication errors
+        Swal.fire({
+          title: "Session Expired",
+          text: "Please log in again to continue.",
+          icon: "warning",
+          confirmButtonText: "Login"
+        }).then(() => {
+          localStorage.removeItem("jwtToken");
+          navigate("/login");
+        });
+      } else {
+        // Handle other errors
+        const errorMessage = error.response?.data?.message || "Failed to add employee";
+        Swal.fire("Error", errorMessage, "error");
       }
-      Swal.fire("Error", errorMessage, "error");
+    } else {
+      // Handle non-Axios errors
+      Swal.fire("Error", "An unexpected error occurred", "error");
     }
+  }
   };
 
   const handleReset = () => {
