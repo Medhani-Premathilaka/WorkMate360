@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -55,5 +57,10 @@ public class UserService {
     }
 
 
+    public Login changePassword(Login user) {
+        Optional<Login> existingUser = userRepo.findById(user.getProfile().getIndex());
+        existingUser.get().setPassword(encoder.encode(user.getPassword()));
+        return userRepo.save(existingUser.get());
 
+    }
 }

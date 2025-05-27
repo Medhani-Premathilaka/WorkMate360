@@ -30,6 +30,11 @@ public class UserController {
         return userService.register(user);
     }
 
+    @PostMapping("/changepassword")
+    public Login changePassword(@RequestBody Login user) {
+        return userService.changePassword(user);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Login user) {
         // Get the JWT token from service
@@ -56,6 +61,7 @@ public class UserController {
             response.put("email", profile.getEmail());
             response.put("profileId", profile.getIndex().toString());
             response.put("imageUrl", profile.getImageUrl());
+            response.put("Index" , profile.getIndex().toString());
             // Add other profile fields as needed
         } else {
             // Include a flag or default values when profile doesn't exist
