@@ -10,6 +10,7 @@ public interface UserRepo extends JpaRepository<Login, Integer> {
     ;
 
     Login findByUsername(String username);
+    //Login findByRole(String role);
 
     // Add more methods as needed
 }

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Nav } from "@/components/Nav";
-import { useFilePicker } from "use-file-picker";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 interface EmployeeData {
-  index: string;
   name: string;
   email: string;
   phoneNumber: string;
@@ -16,37 +15,20 @@ interface EmployeeData {
   gender: string;
   ageNow: string;
   dateOfBirth: string;
-  
   country: string;
   position: string;
   department: string;
   salary: string;
-  imageName: string;
-  imageUrl : string;
-  imageId : string;
+  imageUrl: string;
 }
 
 export function Newdetails() {
-  //const [result,setResult] = useState('')
-  const [previewUrl, setPreviewUrl] = useState(null);
-   const [imageFile, setImageFile] = useState(null);
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImageFile(file);
-    
-    // Create preview
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreviewUrl(null);
-    }
-  };
+  const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const [formData, setFormData] = useState<EmployeeData>({
-    index: "",
     name: "",
     email: "",
     phoneNumber: "",
@@ -61,185 +43,174 @@ export function Newdetails() {
     position: "",
     department: "",
     salary: "",
-    imageName: "",
-    imageType: "",
-    imageData: "",
+    imageUrl: "",
   });
 
-  const { openFilePicker, filesContent, clear } = useFilePicker({
-    accept: ".png",
-    readAs: "DataURL",
-    multiple: false,
-  });
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  //   const handleSubmit = async (e: React.FormEvent) => {
-  //     e.preventDefault();
-  //     try {
-  //       const response = await fetch("http://localhost:8080/profile/add", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(formData),
-  //       });
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
 
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
+    // Upload to Cloudinary
+    setIsUploading(true);
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      data.append("upload_preset", "workmate360");
+      data.append("cloud_name", "dg9elczll");
 
-  //       const result = await Swal.fire({
-  //   position: "center",
-  //   icon: "success",
-  //   title: "Your work has been saved",
-  //   showConfirmButton: true,
-  //   timer: 1500
-  // });
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/dg9elczll/image/upload",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
 
-  //   console.log(result);
-
-  //       setFormData({
-  //         index: "",
-  //         name: "",
-  //         email: "",
-  //         phoneNumber: "",
-  //         province: "",
-  //         district: "",
-  //         street: "",
-  //         houseNumber: "",
-  //         gender: "",
-  //         ageNow: "",
-  //         dateOfBirth: "",
-  //         country: "",
-  //         department: "",
-  //         salary: "",
-  //         position: "",
-  //         imageName:"",
-
-  //   imageType: "",
-  //   imageData: "",
-  //       });
-  //       clear();
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //       alert("Error submitting form");
-  //     }
-  //   };
-
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  try {
-    // Get JWT token for authentication
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      throw new Error('Authentication token missing. Please login again.');
-    }
-
-    // Create FormData object to handle multipart/form-data
-    const formDataObj = new FormData();
-    
-    // Add profile data as JSON string
-    formDataObj.append('profile', new Blob([JSON.stringify(formData)], {
-      type: 'application/json'
-    }));
-    
-    // Add image file if selected
-    // if (filesContent.length > 0) {
-    //   // Convert base64 to blob
-    //   const base64Response = await fetch(filesContent[0].content);
-    //   const blob = await base64Response.blob();
-    //   formDataObj.append('imageFile', blob, filesContent[0].name);
-    // }
-    if (imageFile) {
-        formDataObj.append('imageFile', imageFile);
+      if (!response.ok) {
+        throw new Error("Image upload failed");
       }
-    // Make API call with FormData
-    const response = await fetch("http://localhost:8080/profile/add", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      },
-      body: formDataObj,
-    });
 
-    if (!response.ok) {
-      let errorData;
-      try {
-        errorData = await response.json();
-      } catch {
-        errorData = { message: await response.text() };
+      const result = await response.json();
+      setFormData((prev) => ({ ...prev, imageUrl: result.secure_url }));
+      Swal.fire("Success", "Image uploaded successfully", "success");
+    } catch (error) {
+      console.error("Upload error:", error);
+      Swal.fire("Error", "Failed to upload image", "error");
+      setPreviewUrl(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    } finally {
+      setIsUploading(false);
     }
+  };
 
-    const result = await response.json();
-    
-    await Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Employee added successfully!",
-      showConfirmButton: true,
-      timer: 1500
-    });
-
-    // Reset form
-    setFormData({
-      index: "",
-      name: "",
-      email: "",
-      phoneNumber: "",
-      province: "",
-      district: "",
-      street: "",
-      houseNumber: "",
-      gender: "",
-      ageNow: "",
-      dateOfBirth: "",
-      country: "",
-      department: "",
-      salary: "",
-      position: "",
-      imageName: "",
-      imageType: "",
-      imageData: "",
-    });
-    clear();
-
-  } catch (error) {
-    let errorMessage = "Failed to add employee";
-    
-    if (error instanceof Error) {
-      if (error.message.includes('403')) {
-        errorMessage = "Access denied. You don't have permission to perform this action.";
-      } else if (error.message.includes('401')) {
-        errorMessage = "Session expired. Please login again.";
-        localStorage.removeItem('jwtToken');
-      } else {
-        errorMessage = error.message;
-      }
-    }
-
-    await Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: errorMessage,
-      confirmButtonText: "OK",
-    });
-  }
-};
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   // Validate required fields
+  //   if (!formData.name || !formData.email || !formData.phoneNumber) {
+  //     Swal.fire("Error", "Please fill in all required fields", "error");
+  //     return;
+  //   }
+
+  //   try {
+  //     const token = localStorage.getItem('jwtToken');
+  //     if (!token) {
+  //       throw new Error("Authentication token missing");
+  //     }
+
+  //     const response = await axios.post("http://localhost:8080/profile/add", formData, {
+  //       headers: {
+  //         "Authorization": `Bearer ${token}`,
+  //         "Content-Type": "application/json"
+  //       }
+  //     });
+
+  //     await Swal.fire({
+  //       position: "center",
+  //       icon: "success",
+  //       title: "Employee added successfully!",
+  //       showConfirmButton: false,
+  //       timer: 1500
+  //     });
+
+  //     // Reset form
+  //     setFormData({
+  //       name: "",
+  //       email: "",
+  //       phoneNumber: "",
+  //       province: "",
+  //       district: "",
+  //       street: "",
+  //       houseNumber: "",
+  //       gender: "",
+  //       ageNow: "",
+  //       dateOfBirth: "",
+  //       country: "",
+  //       position: "",
+  //       department: "",
+  //       salary: "",
+  //       imageUrl: ""
+  //     });
+  //     setPreviewUrl(null);
+  //     if (fileInputRef.current) {
+  //       fileInputRef.current.value = "";
+  //     }
+
+  //     navigate("/home");
+  //   } catch (error) {
+  //     console.error("Submission error:", error);
+  //     let errorMessage = "Failed to add employee";
+
+  //     if (axios.isAxiosError(error)) {
+  //       errorMessage = error.response?.data?.message || error.message;
+  //     } else if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     }
+
+  //     Swal.fire("Error", errorMessage, "error");
+  //   }
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    
+  if (!formData.name || !formData.email || !formData.phoneNumber) {
+    Swal.fire("Error", "Please fill in all required fields", "error");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) throw new Error("Authentication token missing");
+
+    await axios.post("http://localhost:8080/profile/add", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      });
+
+      await Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Employee added successfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+
+      // Reset everything
+      handleReset();
+      navigate("/home");
+    } catch (error) {
+      console.error("Submission error:", error);
+      let errorMessage = "Failed to add employee";
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      Swal.fire("Error", errorMessage, "error");
+    }
   };
 
   const handleReset = () => {
     setFormData({
-      index: "",
       name: "",
       email: "",
       phoneNumber: "",
@@ -254,22 +225,22 @@ const handleSubmit = async (e: React.FormEvent) => {
       position: "",
       department: "",
       salary: "",
-      imageName: "",
-
-      imageType: "",
-      imageData: "",
+      imageUrl: "",
     });
-    clear();
+    setPreviewUrl(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
     <div className="flex flex-col h-screen">
       <Nav />
-      <div className="flex-1  overflow-hidden">
-        <div className="h-full  overflow-y-auto p-4 pt-30 bg-gray-100">
-          <div className="  max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden font-serif">
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-4 pt-30 bg-gray-100">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden font-serif">
             <form className="p-8" onSubmit={handleSubmit}>
-              <h2 className="text-center text-xl font-bold p-8 ">
+              <h2 className="text-center text-xl font-bold p-8">
                 Add New Employee
               </h2>
 
@@ -277,7 +248,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 {/* Left Column */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block mb-2">Name</label>
+                    <label className="block mb-2">Name *</label>
                     <input
                       name="name"
                       type="text"
@@ -289,7 +260,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Phone Number</label>
+                    <label className="block mb-2">Phone Number *</label>
                     <input
                       name="phoneNumber"
                       onChange={handleChange}
@@ -302,7 +273,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">District</label>
+                    <label className="block mb-2">District *</label>
                     <input
                       type="text"
                       name="district"
@@ -314,7 +285,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">House Number</label>
+                    <label className="block mb-2">House Number *</label>
                     <input
                       type="text"
                       name="houseNumber"
@@ -326,7 +297,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Date Of Birth</label>
+                    <label className="block mb-2">Date Of Birth *</label>
                     <input
                       type="date"
                       name="dateOfBirth"
@@ -338,7 +309,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Age</label>
+                    <label className="block mb-2">Age *</label>
                     <input
                       type="number"
                       name="ageNow"
@@ -351,34 +322,35 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Department</label>
+                    <label className="block mb-2">Department *</label>
                     <select
                       name="department"
                       className="w-full h-10 p-2 bg-slate-300 rounded-lg focus:outline-black"
                       onChange={handleChange}
                       value={formData.department}
+                      required
                     >
                       <option value="">Select Department</option>
-                      <option value="civil">Civil</option>
-                      <option value="mech">Mechanical</option>
-                      <option value="elec">Electrical</option>
+                      <option value="Civil">Civil</option>
+                      <option value="Mechanical">Mechanical</option>
+                      <option value="Electrical">Electrical</option>
                     </select>
                   </div>
+
                   <div>
-                    <label className="block mb-2">Position</label>
+                    <label className="block mb-2">Position *</label>
                     <input
                       type="text"
                       name="position"
                       onChange={handleChange}
                       value={formData.position}
-                      min={18}
                       className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block mb-2">Salary($)</label>
+                    <label className="block mb-2">Salary($) *</label>
                     <input
                       type="number"
                       name="salary"
@@ -394,7 +366,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 {/* Right Column */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block mb-2">Email</label>
+                    <label className="block mb-2">Email *</label>
                     <input
                       type="email"
                       name="email"
@@ -406,7 +378,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Province</label>
+                    <label className="block mb-2">Province *</label>
                     <input
                       type="text"
                       name="province"
@@ -418,7 +390,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Street</label>
+                    <label className="block mb-2">Street *</label>
                     <input
                       type="text"
                       name="street"
@@ -428,8 +400,9 @@ const handleSubmit = async (e: React.FormEvent) => {
                       required
                     />
                   </div>
+
                   <div>
-                    <label className="block mb-2">Country</label>
+                    <label className="block mb-2">Country *</label>
                     <input
                       type="text"
                       name="country"
@@ -441,7 +414,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Gender</label>
+                    <label className="block mb-2">Gender *</label>
                     <select
                       name="gender"
                       className="w-full h-10 p-2 bg-slate-300 rounded-lg focus:outline-black"
@@ -450,97 +423,65 @@ const handleSubmit = async (e: React.FormEvent) => {
                       required
                     >
                       <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
                     </select>
                   </div>
 
                   <div>
-                    <div className="image-upload-section">
-            <div className="form-group">
-              <label htmlFor="profileImage">Profile Image</label>
-              <input
-                type="file"
-                id="profileImage"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="file-input"
-              />
-              <div className="image-preview-container">
-                {previewUrl ? (
-                  <img src={previewUrl} alt="Preview" className="image-preview" />
-                ) : (
-                  <div className="no-image">No image selected</div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-                    <div>
-                    {/* {filesContent.length > 0 ? (
-                      <div key={0} className="mt-4">
+                    <label className="block mb-2">Profile Picture</label>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="block w-full text-sm text-gray-700
+             file:mr-4 file:py-2 file:px-4
+             file:rounded-lg file:border-0
+             file:text-sm file:font-semibold
+             file:bg-slate-200 file:text-slate-700
+             hover:file:bg-slate-300
+             cursor-pointer
+             disabled:opacity-50"
+                      disabled={isUploading}
+                    />
+                    {isUploading && (
+                      <div className="mt-2 text-sm text-gray-600 animate-pulse">
+                        Uploading image...
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4">
+                    {previewUrl ? (
+                      <div>
                         <img
-                          src={filesContent[0].content}
-                          alt="Uploaded profile"
-                          className="w-40 h-40 object-contain border rounded-lg"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "/default-avatar.png";
-                          }}
+                          src={previewUrl}
+                          alt="Profile preview"
+                          className="w-40 h-40 object-cover border rounded-lg"
                         />
                         <p className="text-sm text-gray-500 mt-1">
-                          {filesContent[0].name}
+                          Image Preview
                         </p>
                       </div>
                     ) : (
-                      <div className="mt-4">
-                        <img
-                          src={
-                            formData.imageData
-                              ? `data:image/png;base64,${formData.imageData}`
-                              : "/default-avatar.png"
-                          }
-                          alt="Current Profile"
-                          className="w-40 h-40 object-contain border rounded-lg"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              "/default-avatar.png";
-                          }}
-                        />
-                        <p className="text-sm text-gray-500 mt-1">
-                          {formData.imageData
-                            ? "Current Profile"
-                            : "No Image Selected"}
+                      <div className="w-40 h-40 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <p className="text-sm text-gray-500">
+                          No image selected
                         </p>
                       </div>
                     )}
-                    <button
-                      type="button"
-                      onClick={() => openFilePicker()}
-                      className="bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
-                    >
-                      {filesContent.length
-                        ? "Change Image"
-                        : "Upload Profile Picture"}
-                    </button>
-                    {filesContent.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => clear()}
-                        className="ml-2 bg-slate-500 p-2 rounded-lg text-white hover:bg-slate-300 hover:text-slate-700"
-                      >
-                        Remove
-                      </button>
-                    )} */}
                   </div>
                 </div>
               </div>
+
               <div className="m-4 p-8 w-full h-auto align-middle flex justify-start">
                 <button
                   type="submit"
-                  className="bg-lime-700 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4"
+                  className="bg-lime-700 hover:bg-slate-400 hover:text-black text-white p-2 w-20 rounded-lg mr-4 disabled:opacity-50"
+                  disabled={isUploading}
                 >
-                  Add
+                  {isUploading ? "Adding..." : "Add"}
                 </button>
                 <button
                   type="button"
@@ -555,6 +496,5 @@ const handleSubmit = async (e: React.FormEvent) => {
         </div>
       </div>
     </div>
-    
   );
 }
