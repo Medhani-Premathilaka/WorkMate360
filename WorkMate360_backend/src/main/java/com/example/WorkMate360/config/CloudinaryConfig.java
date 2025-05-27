@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
+
 public class CloudinaryConfig {
     @Bean
     public Cloudinary cloudinary() {

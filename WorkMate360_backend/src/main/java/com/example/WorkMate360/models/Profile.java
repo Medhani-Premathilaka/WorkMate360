@@ -1,6 +1,7 @@
 package com.example.WorkMate360.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,7 +44,9 @@ public class Profile {
     private String imageUrl;
     private Integer ImageId;
 
-
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Login login;
 
     // Helper methods
 

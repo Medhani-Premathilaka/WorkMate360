@@ -138,50 +138,75 @@ public class ProfileService {
         }
     }
 
-    public Profile createProfileWithCredentials(Profile profile, MultipartFile imageFile) {
-        try {
-            // Generate username and password
-            String username = generateUsername(profile.getName(), profile.getIndex());
-            String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+//    public Profile createProfileWithCredentials(Profile profile, MultipartFile imageFile) {
+//        try {
+//            // Generate username and password
+//            String username = generateUsername(profile.getName(), profile.getIndex());
+//            String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+//
+//
+//            // Set the generated username and password
+//            profile.setEmail(username);
+//            profile.setPhoneNumber(passwordEncoder.encode(password));
+//
+//            // Upload image to Cloudinary if provided
+//            if (imageFile != null && !imageFile.isEmpty()) {
+//                FileUploadUtil.assertAllowed(imageFile, FileUploadUtil.IMAGE_PATTERN);
+//                final String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
+//                final CloudinaryResponse response = this.cloudinaryService.uploadFile(imageFile, fileName);
+//                // Set the URL from Cloudinary response, not just the filename
+//                profile.setImageUrl(response.getUrl());
+//            }else{
+//                return null;
+//            }
+////            if (profile.getImageUrl() == null || profile.getImageUrl().isEmpty()) {
+////                return null;
+////            }
+//
+//            // Save the profile
+//            Profile savedProfile = profileDao.save(profile);
+//
+//            // Create a Login object
+//            Login login = new Login();
+//            login.setUsername(username);
+//            login.setPassword(password);
+//            login.setRole("USER");
+//            login.setProfile(savedProfile);
+//
+//            // Save the login credentials (assuming you have a LoginDao)
+//             userRepo.save(login);
+//
+//
+//            // Send email with raw password (not encoded)
+//            emailService.sendCredentialsEmail(savedProfile.getEmail(), username, password);
+//
+//            return savedProfile;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+    public ResponseEntity<Profile> adddProfile(Profile profile) {
+        String username = generateUsername(profile.getName(), profile.getIndex());
+        String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+        String email = profile.getEmail();
 
+        profile.setEmail(email);
 
-            // Set the generated username and password
-            profile.setEmail(username);
-            profile.setPhoneNumber(passwordEncoder.encode(password));
+        Profile savedProfile = profileDao.save(profile);
 
-            // Upload image to Cloudinary if provided
-            if (imageFile != null && !imageFile.isEmpty()) {
-                FileUploadUtil.assertAllowed(imageFile, FileUploadUtil.IMAGE_PATTERN);
-                final String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
-                final CloudinaryResponse response = this.cloudinaryService.uploadFile(imageFile, fileName);
-                // Set the URL from Cloudinary response, not just the filename
-                profile.setImageUrl(response.getUrl());
-            }else{
-                return null;
-            }
+        Login login = new Login();
+        login.setUsername(username);
+        login.setPassword(passwordEncoder.encode(password));
+        login.setRole("USER");
+        login.setProfile(savedProfile);
 
-            // Save the profile
-            Profile savedProfile = profileDao.save(profile);
+        // Save the login credentials (assuming you have a LoginDao)
+        userRepo.save(login);
+        emailService.sendCredentialsEmail(savedProfile.getEmail(), username, password);
 
-            // Create a Login object
-            Login login = new Login();
-            login.setUsername(username);
-            login.setPassword(password);
-            login.setRole("USER");
-            login.setProfile(savedProfile);
-
-            // Save the login credentials (assuming you have a LoginDao)
-             userRepo.save(login);
-
-
-            // Send email with raw password (not encoded)
-            emailService.sendCredentialsEmail(savedProfile.getEmail(), username, password);
-
-            return savedProfile;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        profileDao.save(profile);
+        return new ResponseEntity<>(profile, HttpStatus.CREATED);
     }
     public void  addProfile(final Integer id, final MultipartFile file ){
         final Profile profile = profileDao.findById(id).orElseThrow(() -> new RuntimeException("Profile not found with id: " + id));
@@ -197,6 +222,7 @@ public class ProfileService {
         Login login = userRepo.findByUsername(username);
         return login != null ? login.getProfile() : null;
     }
+
 }
 
 //@Service
@@ -229,10 +255,7 @@ public class ProfileService {
 //        }
 //    }
 //
-//    public ResponseEntity<Profile> addProfile(Profile profile) {
-//        profileDao.save(profile);
-//        return new ResponseEntity<>(profile, HttpStatus.CREATED);
-//    }
+
 //
 //    public ResponseEntity<String> deleteProfile(Integer index) {
 //        profileDao.deleteById(index);

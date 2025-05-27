@@ -51,35 +51,51 @@ public class ProfileController {
     public ResponseEntity<Profile> getProfileByName(@RequestParam String name) {
         return profileService.getProfileByName(name);
     }
-//    @PostMapping("/add")
-//    public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
-//        return profileService.addProfile(profile);
-//    }
+    @PostMapping("/add")
+    public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+        return profileService.adddProfile(profile);
+    }
 //@PostMapping("/add")
 //public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
-//    Profile savedProfile = profileService.createProfileWithCredentials(profile);
+//    Profile savedProfile = profileService.createProfileWithCredentials(profile,null);
 //    return ResponseEntity.ok(savedProfile);
 //}
-@PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<Profile> addProfile(
-        @RequestPart("profile") Profile profile,
-        @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+//@PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//public ResponseEntity<Profile> addProfile(
+//        @RequestPart("profile") Profile profile,
+//        @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+//
+//try{
+//    Profile savedProfile = profileService.createProfileWithCredentials(profile, imageFile);
+//
+//    if (savedProfile != null) {
+//        return ResponseEntity.ok(savedProfile);
+//    } else {
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(null);
+//    }
+//
+//}catch (Exception e){
+//    e.printStackTrace();
+//    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//}
+//
+//}
+//@PostMapping("/add")
+//public ResponseEntity<Profile> addProfile(@RequestBody Profile profile) {
+//    try {
+//        Profile savedProfile = profileService.createProfileWithCredentials(profile, null); // image is already uploaded
+//        if (savedProfile != null) {
+//            return ResponseEntity.ok(savedProfile);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    } catch (Exception e) {
+//        e.printStackTrace();
+//        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//}
 
-try{
-    Profile savedProfile = profileService.createProfileWithCredentials(profile, imageFile);
-
-    if (savedProfile != null) {
-        return ResponseEntity.ok(savedProfile);
-    } else {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(null);
-    }
-}catch (Exception e){
-    e.printStackTrace();
-    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-}
-
-}
 
     @DeleteMapping("/delete/{index}")
     public ResponseEntity<String> deleteProfile(@PathVariable Integer index) {

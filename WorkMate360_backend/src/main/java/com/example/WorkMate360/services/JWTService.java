@@ -25,7 +25,7 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-
+    @Value("${jwt.secret}")
     private String secretKey;
     private SecretKey key;
     // Replace with your actual secret key
@@ -65,10 +65,13 @@ public class JWTService {
     public String generateToken(String username) {
         // Get the user's role from the database
         Login user = userRepo.findByUsername(username);
-        String role = (user != null) ? user.getRole() : null;
+        //String role = userRepo.findByRole(user.getRole());
+
+        String role = (user != null) ? user.getRole() : "ADMIN";
 
         // Create claims with username and role
         Map<String, Object> claims = new HashMap<>();
+        //claims.put("username", username);
         claims.put("role", role);
 
         
@@ -84,6 +87,7 @@ public class JWTService {
     }
 
     private Key getKey() {
+
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
