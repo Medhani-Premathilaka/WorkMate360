@@ -34,17 +34,17 @@ export function Card() {
   const fetchAllProfiles = async () => {
     try {
       // Get token if you need authentication
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
       
-      // Configure request with token if available
-      const config: any = {};
-      if (token) {
-        config.headers = {
-          'Authorization': `Bearer ${token}`
-        };
-      }
+      // // Configure request with token if available
+      // const config: any = {};
+      // if (token) {
+      //   config.headers = {
+      //     'Authorization': `Bearer ${token}`
+      //   };
+      // }
 
-      const response = await axios.get(`http://localhost:8080/profile/all`, config);
+      const response = await axios.get(`http://localhost:8080/profile/all`);
       setProfiles(response.data);
       setFilteredProfiles(response.data);
     } catch (error) {

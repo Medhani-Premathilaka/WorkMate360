@@ -18,6 +18,8 @@ public class UserService {
     @Autowired
     AuthenticationManager authenticationManager;
 
+
+
     @Autowired
     private JWTService jwtService;
 
@@ -28,6 +30,10 @@ public class UserService {
         // For now, just return the user object
         user.setPassword(encoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+
+    public Login findByUsername(String username) {
+        return userRepo.findByUsername(username);
     }
 
     public String verify(Login user) {
@@ -47,5 +53,7 @@ public class UserService {
         }
         return null;
     }
+
+
 
 }

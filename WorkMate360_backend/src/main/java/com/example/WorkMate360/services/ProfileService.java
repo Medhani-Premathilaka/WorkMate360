@@ -187,13 +187,15 @@ public class ProfileService {
 //        }
 //    }
     public ResponseEntity<Profile> adddProfile(Profile profile) {
-        String username = generateUsername(profile.getName(), profile.getIndex());
-        String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
+
         String email = profile.getEmail();
+
 
         profile.setEmail(email);
 
         Profile savedProfile = profileDao.save(profile);
+        String username = generateUsername(profile.getName(), profile.getIndex());
+        String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
 
         Login login = new Login();
         login.setUsername(username);
@@ -223,7 +225,14 @@ public class ProfileService {
         return login != null ? login.getProfile() : null;
     }
 
-}
+    public ResponseEntity<Profile> getProfileById(Integer id) {
+        Optional<Profile> profileOptional = profileDao.findById(id);
+        if (profileOptional.isPresent()) {
+            return new ResponseEntity<>(profileOptional.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+}}
 
 //@Service
 //public class ProfileService {
