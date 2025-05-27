@@ -77,22 +77,7 @@ const handleClickOpen = () => {
         </>
       )}
 
-      {role === "USER" && (
-        <>
-          <a
-  href="mailto:workmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
-  className="fixed left-5 w-39 top-32 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
->
-  Leave Request
-</a>
-          <hr className="fixed left-5 w-39 top-32 border-t border-gray-400" style={{ marginTop: '3.5rem' }} />
-          <button className=' fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl'>Calender</button>
-          
-          <button className="fixed bottom-5 left-5 flex items-center " onClick={handleClickOpen}>
-            <img src={logoutimage} alt="logout_image" className="w-8 h-8" /><span className="ml-4">Logout</span>
-          </button>
-        </>
-      )}
+      
 
       <Dialog open={open} onClose={handleClose}
         aria-labelledby="Logout"
