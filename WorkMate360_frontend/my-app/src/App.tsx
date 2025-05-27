@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Login } from './pages/Login';
 import { Details } from './pages/Details';
 import { Newdetails } from './pages/Newdetails';
+import { User } from './pages/User';
+import UserCredintials from './pages/UserCredintials';
 function App() {
   return (
   <Router>
@@ -15,6 +17,8 @@ function App() {
       <Route path="/new" element={<Newdetails/>}>
        </Route>
        <Route path="/details/:index" element={<Details />} />
+       <Route path="/user" element={<User/>}> </Route>
+       <Route path="/form" element={<UserCredintials/>}></Route>
     </Routes>
   </Router>
   )
