@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
 import { matchSorter } from 'match-sorter';
 
-const API_URL = "http://localhost:8080/profile/all";
+
 
 interface Profile {
   index: number;
@@ -19,7 +19,7 @@ interface Profile {
   gender: string;
   ageNow: number;
   dateOfBirth?: string;
-  profilePicture: string;
+  imageUrl: string;
 }
 
 export function Card() {
@@ -31,21 +31,32 @@ export function Card() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    const fetchAllProfiles = async () => {
-      try {
-        const response = await axios.get(API_URL);
-        setProfiles(response.data);
-        setFilteredProfiles(response.data);
-      } catch (error) {
-        console.error("Error fetching profiles:", error);
-        setError("Failed to load profiles. Please check console for details.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchAllProfiles = async () => {
+    try {
+      // Get token if you need authentication
+      // const token = localStorage.getItem("token");
+      
+      // // Configure request with token if available
+      // const config: any = {};
+      // if (token) {
+      //   config.headers = {
+      //     'Authorization': `Bearer ${token}`
+      //   };
+      // }
 
-    fetchAllProfiles();
-  }, []);
+      const response = await axios.get(`http://localhost:8080/profile/all`);
+      setProfiles(response.data);
+      setFilteredProfiles(response.data);
+    } catch (error) {
+      console.error("Error fetching profiles:", error);
+      setError("Failed to load profiles. Please check console for details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllProfiles();
+}, []);
 
   const fetchProfileByName = async (name: string) => {
     try {
@@ -88,17 +99,58 @@ export function Card() {
   };
 
   if (loading) {
-    return <div className="text-center p-10">Loading profiles...</div>;
-  }
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+  <div className="shadow-[0_35px_35px_rgba(0,0,0,0.25)] rounded-2xl bg-white p-10">
+    <div className="flex flex-col items-center justify-center text-gray-700">
+      <svg 
+        className="animate-spin h-8 w-8 mb-4 text-slate-700" 
+        xmlns="http://www.w3.org/2000/svg" 
+        fill="none" 
+        viewBox="0 0 24 24"
+      >
+        <circle 
+          className="opacity-25" 
+          cx="12" 
+          cy="12" 
+          r="10" 
+          stroke="currentColor" 
+          strokeWidth="4"
+        ></circle>
+        <path 
+          className="opacity-75" 
+          fill="currentColor" 
+          d="M4 12a8 8 0 018-8v8z"
+        ></path>
+      </svg>
+      <span className="text-lg font-semibold">
+        Loading profiles, please wait...
+      </span>
+    </div>
+  </div>
+</div>
+    
+  );
+}
 
-  if (error) {
-    return (
-      <div className="text-center p-10 text-red-500">
-        {error}
-        <p className="mt-2 text-sm">Ensure the backend is running at {API_URL}</p>
-      </div>
-    );
-  }
+if (error) {
+  return (
+    <div className="fixed top-70 left-90 shadow-[0_35px_35px_rgba(0,0,0,0.25)] rounded-2xl">
+      <div className="flex flex-col items-center justify-center p-10 text-red-600">
+      <svg className="h-8 w-8 mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+      </svg>
+      <span className="text-lg font-semibold mb-2">Failed to load profiles</span>
+      <span className="text-base">{error}</span>
+      <p className="mt-2 text-sm text-gray-500">
+        Please ensure your backend server is running and accessible at <span className="font-mono">http://localhost:8080/profile/all</span>.<br />
+        If the issue persists, check your network connection or contact support.
+      </p>
+    </div>
+    </div>
+    
+  );
+}
 
   return (
     <div className="  w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
@@ -136,7 +188,7 @@ export function Card() {
               className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs"
             >
               <img
-                src={profile.profilePicture || profileimage}
+                src={profile.imageUrl || profileimage}
                 alt="profile"
                 className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
               />
