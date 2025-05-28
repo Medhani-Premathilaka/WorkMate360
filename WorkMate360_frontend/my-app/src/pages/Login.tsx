@@ -13,6 +13,7 @@ interface LoginResponse {
   role: string;
   name: string;
   imageUrl: string;
+  username: username;
 
   //imageUrl: string;// Add other fields if your backend returns more data
 }
@@ -54,10 +55,13 @@ export const Login: React.FC = () => {
       const token = response.data.token;
       const role = response.data.role;
 
+      localStorage.setItem("tocken",token);
       localStorage.setItem("role", response.data.role);
       // Example after login success
       localStorage.setItem("name", response.data.name);
-      localStorage.setItem("profileImageUrl", response.data.imageUrl); // Make sure your backend sends this!
+      localStorage.setItem("profileImageUrl", response.data.imageUrl);
+      // Add this to your login response handler
+localStorage.setItem("username", response.data.username); // Make sure your backend sends this!
       //localStorage.setItem("name",name);
 
       if (!token) {
