@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,7 +21,8 @@ public class UserService {
     @Autowired
     AuthenticationManager authenticationManager;
 
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JWTService jwtService;
@@ -55,12 +57,39 @@ public class UserService {
         }
         return null;
     }
-
-
-    public Login changePassword(Login user) {
-        Optional<Login> existingUser = userRepo.findById(user.getProfile().getIndex());
-        existingUser.get().setPassword(encoder.encode(user.getPassword()));
-        return userRepo.save(existingUser.get());
-
+    public boolean isValidPassword(String password) {
+        return password != null &&
+                password.matches("^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\[\\]{};':\"\\\\|,.<>/?]).{6,}$");
     }
+
+
+//    public Login changePassword(Login user) {
+//        Optional<Login> existingUser = userRepo.findById(user.getProfile().getIndex());
+//        existingUser.get().setPassword(encoder.encode(user.getPassword()));
+//        return userRepo.save(existingUser.get());
+//
+//    }
+//public Login changePassword(Login user) {
+//    // Find user by username first
+//    Login existingUser = userRepo.findByUsername(user.getUsername());
+//
+//    if (existingUser == null) {
+//        throw new RuntimeException("User not found");
+//    }
+//
+//    // Update the password with encoded version
+//    existingUser.setPassword(encoder.encode(user.getPassword()));
+//
+//    // Save and return the updated user
+//    return userRepo.save(existingUser);
+//}
+public Login changePassword(Login user) {
+    Login existingUser = userRepo.findByUsername(user.getUsername());
+    if (existingUser == null) {
+        throw new RuntimeException("User not found");
+    }
+    existingUser.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt new password
+    return userRepo.save(existingUser);
+}
+
 }
