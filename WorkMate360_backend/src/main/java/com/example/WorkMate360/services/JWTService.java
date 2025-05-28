@@ -60,7 +60,9 @@ public class JWTService {
         }
 
     }
-
+    public String getUsernameFromToken(String token) {
+        return extraUserName(token); // You can just use your existing method
+    }
 
     public String generateToken(String username) {
         // Get the user's role from the database
