@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register").permitAll()
                                 .requestMatchers("/profile/add").permitAll()
                                 .requestMatchers("/changepassword").permitAll()
-
+                                .requestMatchers("/todo/create").permitAll()
                         .requestMatchers(
 
                                 "/profile/details/{index}",

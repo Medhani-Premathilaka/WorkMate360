@@ -13,7 +13,8 @@ interface LoginResponse {
   role: string;
   name: string;
   imageUrl: string;
-  username: username;
+  username: string;
+  Index: string;
 
   //imageUrl: string;// Add other fields if your backend returns more data
 }
@@ -55,7 +56,8 @@ export const Login: React.FC = () => {
       const token = response.data.token;
       const role = response.data.role;
 
-      localStorage.setItem("tocken",token);
+      localStorage.setItem("index", response.data.Index);
+      localStorage.setItem("token",token);
       localStorage.setItem("role", response.data.role);
       // Example after login success
       localStorage.setItem("name", response.data.name);
