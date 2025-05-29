@@ -63,6 +63,7 @@ public class UserService {
     }
 
 
+
 //    public Login changePassword(Login user) {
 //        Optional<Login> existingUser = userRepo.findById(user.getProfile().getIndex());
 //        existingUser.get().setPassword(encoder.encode(user.getPassword()));

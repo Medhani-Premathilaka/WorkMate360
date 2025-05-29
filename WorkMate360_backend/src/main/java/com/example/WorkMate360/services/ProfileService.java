@@ -138,54 +138,7 @@ public class ProfileService {
         }
     }
 
-//    public Profile createProfileWithCredentials(Profile profile, MultipartFile imageFile) {
-//        try {
-//            // Generate username and password
-//            String username = generateUsername(profile.getName(), profile.getIndex());
-//            String password = generatePassword(profile.getDateOfBirth(), profile.getIndex());
-//
-//
-//            // Set the generated username and password
-//            profile.setEmail(username);
-//            profile.setPhoneNumber(passwordEncoder.encode(password));
-//
-//            // Upload image to Cloudinary if provided
-//            if (imageFile != null && !imageFile.isEmpty()) {
-//                FileUploadUtil.assertAllowed(imageFile, FileUploadUtil.IMAGE_PATTERN);
-//                final String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
-//                final CloudinaryResponse response = this.cloudinaryService.uploadFile(imageFile, fileName);
-//                // Set the URL from Cloudinary response, not just the filename
-//                profile.setImageUrl(response.getUrl());
-//            }else{
-//                return null;
-//            }
-////            if (profile.getImageUrl() == null || profile.getImageUrl().isEmpty()) {
-////                return null;
-////            }
-//
-//            // Save the profile
-//            Profile savedProfile = profileDao.save(profile);
-//
-//            // Create a Login object
-//            Login login = new Login();
-//            login.setUsername(username);
-//            login.setPassword(password);
-//            login.setRole("USER");
-//            login.setProfile(savedProfile);
-//
-//            // Save the login credentials (assuming you have a LoginDao)
-//             userRepo.save(login);
-//
-//
-//            // Send email with raw password (not encoded)
-//            emailService.sendCredentialsEmail(savedProfile.getEmail(), username, password);
-//
-//            return savedProfile;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+
     public ResponseEntity<Profile> adddProfile(Profile profile) {
 
         String email = profile.getEmail();
@@ -234,62 +187,4 @@ public class ProfileService {
         }
 }}
 
-//@Service
-//public class ProfileService {
-//
-//    @Autowired
-//    ProfileDao profileDao;
-//
-//    public ResponseEntity<List<Profile>> getAllDetails() {
-//        try {
-//            List<Profile> profiles = new ArrayList<>((Collection<Profile>) profileDao.findAll());
-//            return new ResponseEntity<>(profiles, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-//    }
-//
-//    public ResponseEntity<Profile> getAllDetailsByIndex(Integer index) {
-//        try {
-//            Optional<Profile> profileOptional = profileDao.findById(index);
-//            if (profileOptional.isPresent()) {
-//                return new ResponseEntity<>(profileOptional.get(), HttpStatus.OK);
-//            } else {
-//                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-//    }
-//
 
-//
-//    public ResponseEntity<String> deleteProfile(Integer index) {
-//        profileDao.deleteById(index);
-//        return new ResponseEntity<>("Profile deleted successfully", HttpStatus.OK);
-////        try {
-////            if (profileDao.existsById(id)) {
-////                profileDao.deleteById(id);
-////                return new ResponseEntity<>("Profile deleted successfully", HttpStatus.OK);
-////            } else {
-////                return new ResponseEntity<>("Profile not found with id: " + id, HttpStatus.NOT_FOUND);
-////            }
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////            return new ResponseEntity<>("Failed to delete profile: " + e.getMessage(),
-////                    HttpStatus.INTERNAL_SERVER_ERROR);
-////        }
-//    }
-//
-//    public Profile updateProfile(Profile profile) {
-//        profileDao.save(profile);
-//        return profile;
-//        //return "Updated successfully";
-//    }
-//
-//    public int count() {
-//        return Math.toIntExact(profileDao.count());
-//    }
-//}

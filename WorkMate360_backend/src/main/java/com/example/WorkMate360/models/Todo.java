@@ -1,5 +1,7 @@
 package com.example.WorkMate360.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,5 +27,6 @@ public class Todo {
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
+    @JsonBackReference
     private Profile profile;
 }
