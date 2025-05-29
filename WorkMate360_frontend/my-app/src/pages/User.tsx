@@ -1,4 +1,5 @@
 import { Nav } from "@/components/Nav";
+import { TodoCard } from "@/components/TodoCard";
 import {
   Button,
   Dialog,
@@ -12,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 interface Profile {
-  index: number;  // Note: capital 'I' to match backend entity
+  index: number; // Note: capital 'I' to match backend entity
 }
 
 interface Todo {
@@ -20,6 +21,7 @@ interface Todo {
   dueDate: string;
   isCompleted: boolean;
   profile: Profile;
+  description : string;
 }
 
 export function User() {
@@ -29,7 +31,8 @@ export function User() {
     title: "",
     dueDate: "",
     isCompleted: false,
-    profile: { index: parseInt(localStorage.getItem("index") || "0", 10) }
+    description:"",
+    profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
   });
 
   const handleReset = () => {
@@ -37,7 +40,8 @@ export function User() {
       title: "",
       dueDate: "",
       isCompleted: false,
-      profile: { index: parseInt(localStorage.getItem("index") || "0", 10) }
+      description:"",
+      profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
     });
   };
 
@@ -52,7 +56,21 @@ export function User() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/todo/create", formData);
+      if(formData.title.trim() === "" || formData.dueDate.trim() === ""){
+        handleClose();
+        Swal.fire({
+  icon: "error",
+  title: "Oops...",
+  text: "All Fields are required",
+  footer: '<a href="#">Enter Valid Information.</a>'
+});
+        return;
+      }
+
+      const response = await axios.post(
+        "http://localhost:8080/todo/create",
+        formData
+      );
       handleReset();
       handleClose();
       await Swal.fire({
@@ -62,12 +80,11 @@ export function User() {
         showConfirmButton: false,
         timer: 1500,
       });
-      
+
       // Reset everything
-    
+
       navigate("/user");
     } catch (error) {
-      
       console.error("Submission error:", error);
       handleClose();
       Swal.fire({
@@ -75,12 +92,14 @@ export function User() {
         icon: "error",
         title: "Failed to add todo",
         text: "Please try again",
-        showConfirmButton: true
+        showConfirmButton: true,
       });
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -94,7 +113,7 @@ export function User() {
       <div className="w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
         <button
           onClick={handleClickOpen}
-          className="bg-slate-700 text-white absolute right-10 top-32 font-serif p-3 hover:text-xl rounded-xl"
+          className="bg-slate-700 text-white fixed right-10 top-32 font-serif p-3  hover:text-xl rounded-xl"
         >
           + New Todo
         </button>
@@ -120,25 +139,44 @@ export function User() {
         <DialogContent>
           <div className="flex flex-col gap-6 mt-2">
             <div>
-              <label className="block mb-1 text-gray-700 font-semibold">Task</label>
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Task
+              </label>
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Enter Task"
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg"
               />
             </div>
             <div>
-              <label className="block mb-1 text-gray-700 font-semibold">Due Date</label>
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Due Date
+              </label>
               <input
                 type="date"
                 name="dueDate"
                 value={formData.dueDate}
                 onChange={handleChange}
+                required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg"
               />
+            </div>
+            <div>
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Description
+              </label>
+              <textarea
+  name="description"
+  value={formData.description}
+  onChange={handleChange}
+  placeholder="Enter Description"
+  rows={4}
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg resize-y"
+/>
             </div>
           </div>
         </DialogContent>
@@ -166,6 +204,9 @@ export function User() {
           </button>
         </DialogActions>
       </Dialog>
+      <div className="fixed top-30 left-64">
+        <TodoCard />
+      </div>
     </div>
   );
 }

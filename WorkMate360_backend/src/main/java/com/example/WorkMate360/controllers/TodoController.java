@@ -24,19 +24,20 @@ public class TodoController {
 
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Todo>> getAllTodos(){
-        return  todoService.getAllTodos();
-    }
+
+//    @GetMapping("/getAll")
+//    public ResponseEntity<List<Todo>> getAllTodos(@PathVariable Todo todo) {
+//        return  todoService.getAllTodos(todo);
+//    }
 
 
 //    @GetMapping("/getById")
 //    public ResponseEntity<List<Todo>> getTodoByProfileId(@RequestParam Integer profile_id) {
 //        return todoService.getTodoByProfileId(profile_id);
 //    }
-@GetMapping("/getByProfileId/{profileId}")
-public ResponseEntity<List<Todo>> getTodoByProfileId(@PathVariable Integer profileId) {
-    return todoService.getTodoByProfileId(profileId);
+@GetMapping("/getByProfileId/{index}")
+public ResponseEntity<List<Todo>> getTodoByProfileId(@PathVariable Integer index) {
+    return todoService.getTodoByProfileId(index);
 }
     @GetMapping("/getById/{id}")
     public ResponseEntity<Todo> getTodoById(@RequestParam Integer id) {

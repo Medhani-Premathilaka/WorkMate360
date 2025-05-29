@@ -24,6 +24,7 @@ public class Todo {
     private String title;
     private LocalDate dueDate; // Links to calendar
     private boolean isCompleted;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)

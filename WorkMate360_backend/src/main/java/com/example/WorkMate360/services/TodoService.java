@@ -26,7 +26,9 @@ public class TodoService {
 
 
     public ResponseEntity<List<Todo>> getTodoByProfileId(Integer profileId) {
+
         try {
+
             List<Todo> todos = todoDao.findByProfileId(profileId);
             return new ResponseEntity<>(todos, HttpStatus.OK);
         } catch (Exception e) {
@@ -51,16 +53,25 @@ public class TodoService {
         //return new ResponseEntity<>(todo, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<List<Todo>> getAllTodos() {
-        try {
-            List<Todo> todos = new ArrayList<>((Collection<Todo>) todoDao.findAll());
-            return new ResponseEntity<>(todos, HttpStatus.OK);
-
-        }catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    public ResponseEntity<List<Todo>> getAllTodos(Todo todo) {
+//        try {
+//            if (todo.getProfile() == null || todo.getProfile().getIndex() == null) {
+//                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//            }
+//            Integer profileId = todo.getProfile().getIndex();
+//            Profile profile = profileDao.findById(profileId)
+//                    .orElseThrow(() -> new EntityNotFoundException("Profile not found with id: " + profileId));
+//
+//
+//
+//            List<Todo> todos = new ArrayList<>((Collection<Todo>) todoDao.findAll());
+//            return new ResponseEntity<>(todos, HttpStatus.OK);
+//
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 //    public ResponseEntity<List<Todo>> getTodoByProfileId(Integer profile_id) {
 //        try {

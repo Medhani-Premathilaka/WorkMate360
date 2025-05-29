@@ -14,4 +14,5 @@ public interface TodoDao extends JpaRepository<Todo, Integer> {
     //List<Todo> findAllByProfile_Id(Integer profile_id);
     @Query("SELECT t FROM Todo t WHERE t.profile.id = :profileId")
     List<Todo> findByProfileId(@Param("profileId") Integer profileId);
+
 }
