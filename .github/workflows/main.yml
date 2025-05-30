@@ -24,7 +24,7 @@ jobs:
       run: |
         if [ ! -f "WorkMate360/package-lock.json" ]; then
           echo "Generating package-lock.json..."
-          cd src/frontend
+          cd  WorkMate360
           npm install
           cd ../..
         else
