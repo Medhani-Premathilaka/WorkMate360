@@ -1,0 +1,55 @@
+name: WorkMate360 CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build Spring Boot application
+      run: |
+        cd src  # Adjust path as needed based on your project structure
+        mvn clean package -DskipTests
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json  # Adjust path as needed
+
+    - name: Build React frontend
+      run: |
+        cd frontend  # Adjust path as needed
+        npm ci
+        npm run build
+        
+    - name: Copy frontend build to Spring Boot static resources
+      run: |
+        mkdir -p src/main/resources/static
+        cp -r frontend/dist/* src/main/resources/static/
+        
+    - name: Package application
+      run: |
+        cd src
+        mvn package -DskipTests
+        
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: application
+        path: src/target/*.jar

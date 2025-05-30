@@ -277,7 +277,7 @@ export function User() {
         maxWidth="md"
         PaperProps={{
           className: "rounded-2xl p-4",
-          style: { minWidth: 300, maxWidth: 500 },
+          style: { minWidth: 300, maxWidth: 500 ,},
         }}
       >
         <DialogTitle id="add-todo-dialog">
