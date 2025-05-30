@@ -8,9 +8,17 @@ import {
   DialogTitle,
 } from "@mui/material";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { DateCalendar, PickersDay } from '@mui/x-date-pickers';
+import { styled } from '@mui/material/styles';
+import { Tooltip } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 
 interface Profile {
   index: number; // Note: capital 'I' to match backend entity
@@ -29,6 +37,45 @@ export function User() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const HighlightedDay = styled(PickersDay)(({ theme }) => ({
+  backgroundColor: '#cbd5e1', // slate-300
+  color: '#0f172a',           // slate-900
+  borderRadius: '50%',
+  fontWeight: 'bold',
+  width: 36,
+  height: 36,
+  margin: '0 auto',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+  
+  useEffect(() => {
+    const fetchAllTodos = async () => {
+      try {
+        const index = localStorage.getItem("index");
+        if (!index) {
+          setError("Profile ID not found. Please login again.");
+          setLoading(false);
+          return;
+        }
+        const res = await axios.get(
+          `http://localhost:8080/todo/getByProfileId/${index}`
+        );
+        setTodos(res.data);
+      } catch (error) {
+        console.error("Error fetching todos.", error);
+        setError("Failed to load todos. Please check console for details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllTodos();
+  }, []);
+
   const [formData, setFormData] = useState<Todo>({
     title: "",
     dueDate: "",
@@ -36,6 +83,8 @@ export function User() {
     description: "",
     profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
   });
+  // Highlight tiles with due dates and show tooltip
+  
   const handleEditTodo = (todo: Todo) => {
     setFormData({
       id: todo.id,
@@ -185,6 +234,39 @@ export function User() {
           + New Todo
         </button>
         <div className="fixed top-45 left-64"></div>
+      </div>
+      <div className=" fixed top-50 right-10 flex justify-center my-8 shadow-2xl rounded-2xl">
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+  <DateCalendar
+    sx={{ mx: "auto", my: 4 }}
+    slots={{
+      day: (props) => {
+        const { day, outsideCurrentMonth, ...other } = props;
+        const calendarDate = day.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
+        const todosForDate = todos.filter(
+          (todo) =>
+            todo.dueDate &&
+            todo.dueDate.split("T")[0] === calendarDate
+        );
+        if (todosForDate.length > 0) {
+          return (
+            <Tooltip
+              key={calendarDate}
+              title={todosForDate.map((todo) => `This is the due date for "${todo.title}"`).join('\n')}
+              arrow
+              placement="top"
+            >
+              <span>
+                <HighlightedDay {...props} />
+              </span>
+            </Tooltip>
+          );
+        }
+        return <PickersDay {...props} />;
+      }
+    }}
+  />
+</LocalizationProvider>
       </div>
 
       <Dialog
