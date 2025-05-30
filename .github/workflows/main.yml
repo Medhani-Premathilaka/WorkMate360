@@ -20,16 +20,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Generate package-lock.json if missing
-      run: |
-        if [ ! -f "WorkMate360/package-lock.json" ]; then
-          echo "Generating package-lock.json..."
-          cd  WorkMate360
-          npm install
-          cd ../..
-        else
-          echo "package-lock.json exists"
-        fi
+    
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
