@@ -22,7 +22,7 @@ jobs:
 
     - name: Generate package-lock.json if missing
       run: |
-        if [ ! -f "src/frontend/package-lock.json" ]; then
+        if [ ! -f "WorkMate360/package-lock.json" ]; then
           echo "Generating package-lock.json..."
           cd src/frontend
           npm install
@@ -36,11 +36,11 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: src/frontend/package-lock.json
+        cache-dependency-path: WorkMate360/package-lock.json
 
     - name: Build React frontend
       run: |
-        cd src/frontend
+        cd WorkMate360/
         npm ci
         npm run build
 
