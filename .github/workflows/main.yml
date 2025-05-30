@@ -22,11 +22,11 @@ jobs:
 
     - name: Generate package-lock.json if missing
       run: |
-        if [ ! -f "frontend/package-lock.json" ]; then
+        if [ ! -f "src/frontend/package-lock.json" ]; then
           echo "Generating package-lock.json..."
-          cd frontend
+          cd src/frontend
           npm install
-          cd ..
+          cd ../..
         else
           echo "package-lock.json exists"
         fi
@@ -36,24 +36,24 @@ jobs:
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+        cache-dependency-path: src/frontend/package-lock.json
 
     - name: Build React frontend
       run: |
-        cd frontend
+        cd src/frontend
         npm ci
         npm run build
-        
+
     - name: Copy frontend build to Spring Boot static resources
       run: |
         mkdir -p src/main/resources/static
-        cp -r frontend/dist/* src/main/resources/static/
-        
+        cp -r src/frontend/dist/* src/main/resources/static/
+
     - name: Package Spring Boot application
       run: |
         cd src
         mvn package -DskipTests
-        
+
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
       with:
