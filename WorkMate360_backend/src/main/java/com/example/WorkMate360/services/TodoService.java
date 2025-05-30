@@ -97,4 +97,45 @@ public class TodoService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseEntity<Todo> deleteTodo(Integer id) {
+    try {
+            if (todoDao.existsById(id)) {
+                todoDao.deleteById(id);
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<Todo> updateTodo(Todo todo, Integer id) {
+        if (todo == null || todo.getId() == null || !todo.getId().equals(id)) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        try {
+            if (todo.getId() == null || !todoDao.existsById(todo.getId())) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+
+            // Ensure the profile exists before updating the todo
+            if (todo.getProfile() == null || todo.getProfile().getIndex() == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+            Integer profileId = todo.getProfile().getIndex();
+            Profile profile = profileDao.findById(profileId)
+                    .orElseThrow(() -> new EntityNotFoundException("Profile not found with id: " + profileId));
+
+            // Set the managed entity reference
+            todo.setProfile(profile);
+            Todo updatedTodo = todoDao.save(todo);
+            return new ResponseEntity<>(updatedTodo, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

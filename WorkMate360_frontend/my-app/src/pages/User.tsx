@@ -17,35 +17,61 @@ interface Profile {
 }
 
 interface Todo {
+  id?: number;
   title: string;
   dueDate: string;
   isCompleted: boolean;
   profile: Profile;
-  description : string;
+  description?: string;
 }
 
 export function User() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState<Todo>({
     title: "",
     dueDate: "",
     isCompleted: false,
-    description:"",
+    description: "",
     profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
   });
+  const handleEditTodo = (todo: Todo) => {
+    setFormData({
+      id: todo.id,
+      title: todo.title,
+      dueDate: todo.dueDate,
+      isCompleted: typeof todo.isCompleted === "boolean" ? todo.isCompleted : false,
+      description: todo.description,
+      profile: {
+        index:
+          todo.profile?.index ??
+          parseInt(localStorage.getItem("index") || "0", 10),
+      },
+    });
+    setEditMode(true);
+    setOpen(true);
+  };
 
   const handleReset = () => {
     setFormData({
       title: "",
       dueDate: "",
       isCompleted: false,
-      description:"",
+      description: "",
       profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
     });
   };
 
   const handleClickOpen = () => {
+    setFormData({
+      title: "",
+      dueDate: "",
+      isCompleted: false,
+      description: "",
+      profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
+    });
+    setEditMode(false);
     setOpen(true);
   };
 
@@ -56,22 +82,62 @@ export function User() {
 
   const handleSubmit = async () => {
     try {
-      if(formData.title.trim() === "" || formData.dueDate.trim() === ""){
+      if (formData.title.trim() === "" || formData.dueDate.trim() === "") {
         handleClose();
         Swal.fire({
-  icon: "error",
-  title: "Oops...",
-  text: "All Fields are required",
-  footer: '<a href="#">Enter Valid Information.</a>'
-});
+          icon: "error",
+          title: "Oops...",
+          text: "All Fields are required",
+          footer: '<a href="#">Enter Valid Information.</a>',
+        });
         return;
       }
+    //   const payload = {
+    //   ...formData,
+    //   isCompleted: typeof formData.isCompleted === "boolean" ? formData.isCompleted : false,
+    // };
+    const profileIndex = localStorage.getItem("index");
+    const payload = {
+  ...formData,
+  profile: { index: parseInt(profileIndex || "0", 10) },
+  isCompleted: typeof formData.isCompleted === "boolean" ? formData.isCompleted : false,
+};
+      console.log("Submitting formData:", payload);
 
-      const response = await axios.post(
-        "http://localhost:8080/todo/create",
-        formData
+      if (editMode) {
+      if (!formData.id) {
+        Swal.fire({
+          icon: "error",
+          title: "Missing Todo ID",
+          text: "Cannot update todo without an ID.",
+        });
+        return;
+      }
+      console.log(`Sending PUT request to: http://localhost:8080/todo/update/${formData.id}`);
+      console.log("With payload:", JSON.stringify(payload));
+      
+      await axios.put(
+        `http://localhost:8080/todo/update/${formData.id}`,
+        payload,
+  {
+    // headers: {
+    //   // Replace 'token' with your actual localStorage key
+    //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //   "Content-Type": "application/json",
+    // },
+  }
+        
       );
-      handleReset();
+      handleClose();
+      await Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Todo updated successfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }else {
+      await axios.post("http://localhost:8080/todo/create", formData);
       handleClose();
       await Swal.fire({
         position: "center",
@@ -80,20 +146,21 @@ export function User() {
         showConfirmButton: false,
         timer: 1500,
       });
-
-      // Reset everything
-
-      navigate("/user");
-    } catch (error) {
-      console.error("Submission error:", error);
-      handleClose();
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: "Failed to add todo",
-        text: "Please try again",
-        showConfirmButton: true,
-      });
+    }
+    
+    handleReset();
+    
+    navigate("/user");
+  } catch (error) {
+    console.error("Submission error:", error);
+    handleClose();
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "Failed to add/update todo",
+      text: "Please try again",
+      showConfirmButton: true,
+    });
     }
   };
 
@@ -133,7 +200,7 @@ export function User() {
       >
         <DialogTitle id="add-todo-dialog">
           <span className="font-serif text-slate-700 font-bold w-full flex justify-center text-2xl">
-            Add New Todo
+            {editMode ? "Update Todo" : "Add New Todo"}
           </span>
         </DialogTitle>
         <DialogContent>
@@ -154,29 +221,31 @@ export function User() {
             </div>
             <div>
               <label className="block mb-1 text-gray-700 font-semibold">
-                Due Date
+              Due Date
               </label>
               <input
-                type="date"
-                name="dueDate"
-                value={formData.dueDate}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg"
+              type="date"
+              name="dueDate"
+              value={formData.dueDate}
+              onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg"
               />
             </div>
+            
             <div>
               <label className="block mb-1 text-gray-700 font-semibold">
                 Description
               </label>
               <textarea
-  name="description"
-  value={formData.description}
-  onChange={handleChange}
-  placeholder="Enter Description"
-  rows={4}
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg resize-y"
-/>
+                name="description"
+                value={formData.description || ""}
+                onChange={handleChange}
+                placeholder="Enter Description"
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 text-lg resize-y"
+              />
             </div>
           </div>
         </DialogContent>
@@ -186,7 +255,7 @@ export function User() {
             onClick={handleSubmit}
             className="bg-green-700 hover:bg-slate-300 text-white hover:text-black p-2 rounded-lg shadow-lg text-lg font-bold transition"
           >
-            Add
+            {editMode ? "Update" : "Add"}
           </button>
           <button
             type="button"
@@ -205,7 +274,7 @@ export function User() {
         </DialogActions>
       </Dialog>
       <div className="fixed top-30 left-64">
-        <TodoCard />
+        <TodoCard onEdit={handleEditTodo} />
       </div>
     </div>
   );
