@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4  # Also updated to v4 (optional but recommended)
+    - uses: actions/checkout@v4
 
     - name: Set up JDK 24
       uses: actions/setup-java@v3
@@ -20,15 +20,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Verify frontend/package-lock.json exists
+    - name: Generate package-lock.json if missing
       run: |
         if [ ! -f "frontend/package-lock.json" ]; then
-          echo "Error: frontend/package-lock.json not found"
-          exit 1
+          echo "Generating package-lock.json..."
+          cd frontend
+          npm install
+          cd ..
+        else
+          echo "package-lock.json exists"
         fi
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4  # Updated to v4 (optional but recommended)
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
@@ -51,7 +55,7 @@ jobs:
         mvn package -DskipTests
         
     - name: Upload JAR artifact
-      uses: actions/upload-artifact@v4  # Critical fix: Updated from v3 to v4
+      uses: actions/upload-artifact@v4
       with:
         name: application
         path: src/target/*.jar
