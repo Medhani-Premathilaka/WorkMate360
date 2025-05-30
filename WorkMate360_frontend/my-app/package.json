@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.2.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.0",
+    "@mui/lab": "^7.0.0-beta.12",
     "@mui/material": "^7.1.0",
-    "@mui/x-date-pickers": "^8.4.0",
+    "@mui/x-date-pickers": "^8.5.0",
     "@radix-ui/react-slot": "^1.2.2",
     "@tailwindcss/vite": "^4.1.7",
     "@types/date-fns": "^2.5.3",
@@ -26,6 +29,7 @@
     "match-sorter": "^8.0.1",
     "react": "^19.1.0",
     "react-big-calendar": "^1.18.0",
+    "react-calendar": "^6.0.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "react-toastify": "^11.0.5",

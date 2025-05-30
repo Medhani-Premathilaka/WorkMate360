@@ -7,6 +7,7 @@ import { Details } from './pages/Details';
 import { Newdetails } from './pages/Newdetails';
 import { User } from './pages/User';
 import UserCredintials from './pages/UserCredintials';
+import Calendar from 'react-calendar';
 function App() {
   return (
   <Router>
@@ -19,6 +20,7 @@ function App() {
        <Route path="/details/:index" element={<Details />} />
        <Route path="/user" element={<User/>}> </Route>
        <Route path="/form" element={<UserCredintials/>}></Route>
+       <Route path="/calender" element={<Calendar/>}></Route>
     </Routes>
   </Router>
   )

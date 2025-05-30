@@ -178,7 +178,7 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
   return (
     <div className="w-full pb-500 min-h-screen bg-white rounded-xl overflow-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-slate-600">My Tasks</h2>
-      <div className="max-h-[65vh] fixed left-64 right-64 overflow-y-auto pr-4 pl-4 mb-10">
+      <div className="max-h-[65vh] fixed left-64 right-100 overflow-y-auto pr-4 pl-4 mb-10">
         {todos.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <p>No tasks found. Create a new task to get started!</p>
