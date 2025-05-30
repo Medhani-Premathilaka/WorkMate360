@@ -53,7 +53,7 @@ export function UserSidebar() {
             style={{ marginTop: "3.5rem" }}
           />
           <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
-           <Link to={"/calender"}>Calender</Link>
+           <Link to={"/form"}>Privacy</Link>
           </button>
 
           <hr
@@ -61,12 +61,12 @@ export function UserSidebar() {
             style={{ marginTop: "3.5rem" }}
           />
           <button className=" fixed left-5 w-39 top-80 p-2 rounded-2xl hover:text-lg">
-            <Link to={"/form"}>Privacy</Link>
+            
           </button>
-          <hr
+          {/* <hr
             className="fixed left-5 w-39 top-64 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
-          />
+          /> */}
           <a
             href="mailto:workmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
             className="fixed left-5 w-39 top-64 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
