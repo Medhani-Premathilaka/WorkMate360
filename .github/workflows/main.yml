@@ -1,0 +1,50 @@
+name: WorkMate360 CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 24
+      uses: actions/setup-java@v3
+      with:
+        java-version: '24'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: WorkMate360_frontend/my-app/package-lock.json
+
+    - name: Build React frontend
+      run: |
+        cd WorkMate360_frontend/my-app
+        npm ci
+        npm run build
+
+    - name: Copy frontend build to Spring Boot static resources
+      run: |
+        mkdir -p src/main/resources/static
+        cp -r WorkMate360_frontend/my-app/dist/* src/main/resources/static/
+
+    - name: Package Spring Boot application
+      run: |
+        cd src
+        mvn package -DskipTests
+
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: application
+        path: src/target/*.jar
