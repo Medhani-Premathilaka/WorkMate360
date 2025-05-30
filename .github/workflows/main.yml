@@ -20,25 +20,23 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    
-
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
         cache: 'npm'
-        cache-dependency-path: WorkMate360/my-app/package-lock.json
+        cache-dependency-path: WorkMate360_frontend/my-app/package-lock.json
 
     - name: Build React frontend
       run: |
-        cd WorkMate360/my-app
+        cd WorkMate360_frontend/my-app
         npm ci
         npm run build
 
     - name: Copy frontend build to Spring Boot static resources
       run: |
         mkdir -p src/main/resources/static
-        cp -r src/frontend/dist/* src/main/resources/static/
+        cp -r WorkMate360_frontend/my-app/dist/* src/main/resources/static/
 
     - name: Package Spring Boot application
       run: |
