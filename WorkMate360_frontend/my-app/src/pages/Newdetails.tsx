@@ -99,73 +99,7 @@ export function Newdetails() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   // Validate required fields
-  //   if (!formData.name || !formData.email || !formData.phoneNumber) {
-  //     Swal.fire("Error", "Please fill in all required fields", "error");
-  //     return;
-  //   }
-
-  //   try {
-  //     const token = localStorage.getItem('jwtToken');
-  //     if (!token) {
-  //       throw new Error("Authentication token missing");
-  //     }
-
-  //     const response = await axios.post("http://localhost:8080/profile/add", formData, {
-  //       headers: {
-  //         "Authorization": `Bearer ${token}`,
-  //         "Content-Type": "application/json"
-  //       }
-  //     });
-
-  //     await Swal.fire({
-  //       position: "center",
-  //       icon: "success",
-  //       title: "Employee added successfully!",
-  //       showConfirmButton: false,
-  //       timer: 1500
-  //     });
-
-  //     // Reset form
-  //     setFormData({
-  //       name: "",
-  //       email: "",
-  //       phoneNumber: "",
-  //       province: "",
-  //       district: "",
-  //       street: "",
-  //       houseNumber: "",
-  //       gender: "",
-  //       ageNow: "",
-  //       dateOfBirth: "",
-  //       country: "",
-  //       position: "",
-  //       department: "",
-  //       salary: "",
-  //       imageUrl: ""
-  //     });
-  //     setPreviewUrl(null);
-  //     if (fileInputRef.current) {
-  //       fileInputRef.current.value = "";
-  //     }
-
-  //     navigate("/home");
-  //   } catch (error) {
-  //     console.error("Submission error:", error);
-  //     let errorMessage = "Failed to add employee";
-
-  //     if (axios.isAxiosError(error)) {
-  //       errorMessage = error.response?.data?.message || error.message;
-  //     } else if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     }
-
-  //     Swal.fire("Error", errorMessage, "error");
-  //   }
-  // };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

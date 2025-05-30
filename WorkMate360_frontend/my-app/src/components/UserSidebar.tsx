@@ -11,7 +11,10 @@ import { Button } from "./ui/button";
 import axios from "axios";
 import { Link } from "react-router";
 
+import "react-calendar/dist/Calendar.css";
+
 export function UserSidebar() {
+  
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = useState("");
   const [name, setName] = useState("");
@@ -50,7 +53,7 @@ export function UserSidebar() {
             style={{ marginTop: "3.5rem" }}
           />
           <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
-            Calender
+           <Link to={"/calender"}>Calender</Link>
           </button>
 
           <hr

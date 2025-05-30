@@ -46,7 +46,12 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/register").permitAll()
                                 .requestMatchers("/profile/add").permitAll()
                                 .requestMatchers("/changepassword").permitAll()
-
+                                .requestMatchers("/todo/create").permitAll()
+                                .requestMatchers("/todo/getByProfileId/{index}").permitAll()
+                                //.requestMatchers("/todo/getById/{id}").permitAll()
+                                .requestMatchers("/todo/delete/{id}").permitAll()
+                                .requestMatchers("/todo/update").permitAll()
+                                .requestMatchers("/todo/**").permitAll()
                         .requestMatchers(
 
                                 "/profile/details/{index}",
