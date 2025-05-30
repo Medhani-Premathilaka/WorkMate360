@@ -27,11 +27,11 @@ jobs:
       with:
         node-version: '22'
         cache: 'npm'
-        cache-dependency-path: WorkMate360/package-lock.json
+        cache-dependency-path: WorkMate360/my-app/package-lock.json
 
     - name: Build React frontend
       run: |
-        cd WorkMate360/
+        cd WorkMate360/my-app
         npm ci
         npm run build
 
