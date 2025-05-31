@@ -9,15 +9,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from './ui/button';
 import axios from 'axios';
-import Box from '@mui/material/Box';
-import { ThemeProvider } from '@mui/material/styles';
+
 
 
 export function Sidebar() {
 const [open, setOpen] = React.useState(false);
 const [employeeCount, setEmployeeCount] = useState<number>(0);
 const [role, setRole] = useState("");
-const [name, setName] = useState("");
+const [, setName] = useState("");
 
 useEffect(() => {
     const storedName = localStorage.getItem("name");

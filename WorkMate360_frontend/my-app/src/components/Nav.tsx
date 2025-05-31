@@ -9,20 +9,20 @@ import {UserSidebar} from "./UserSidebar";
 //   token: string;
 //   role : string;// Add other fields if your backend returns more data
 // }
-interface Profile {
-  index: number;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  province: string;
-  district: string;
-  street: string;
-  houseNumber: string;
-  gender: string;
-  ageNow: number;
-  dateOfBirth?: string;
-  imageUrl: string;
-}
+// interface Profile {
+//   index: number;
+//   name: string;
+//   email: string;
+//   phoneNumber: string;
+//   province: string;
+//   district: string;
+//   street: string;
+//   houseNumber: string;
+//   gender: string;
+//   ageNow: number;
+//   dateOfBirth?: string;
+//   imageUrl: string;
+// }
 
 export function Nav() {
   const [showSidebar, setShowSidebar] = useState(true);

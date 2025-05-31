@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import profileimage from "../assets/images/profile.png";
 import { useNavigate } from "react-router-dom";
@@ -164,7 +164,7 @@ if (error) {
   filterOptions={(options, { inputValue }) =>
     matchSorter(options, inputValue)
   }
-  onInputChange={(event, newValue) => {
+  onInputChange={(_event, newValue) => {
     if (typeof newValue === "string") handleSearch(newValue);
   }}
   renderInput={(params) => (

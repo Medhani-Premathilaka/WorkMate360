@@ -111,7 +111,7 @@ export function Newdetails() {
 
   try {
     
-    const response = await axios.post("http://localhost:8080/profile/add", formData);
+    await axios.post("http://localhost:8080/profile/add", formData);
 
       await Swal.fire({
         position: "center",

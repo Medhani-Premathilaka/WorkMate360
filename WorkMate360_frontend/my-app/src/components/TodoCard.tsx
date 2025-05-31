@@ -18,7 +18,7 @@ interface Todo {
 
 export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,9 +78,9 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
     }
   };
 
-  const handleUpdate = (todoId: number, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-  };
+  // const handleUpdate = (todoId: number, e?: React.MouseEvent) => {
+  //   if (e) e.stopPropagation();
+  // };
 
   const handleToggleComplete = async (todo: Todo, e?: React.MouseEvent) => {
   if (e) e.stopPropagation();

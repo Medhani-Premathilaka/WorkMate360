@@ -1,9 +1,9 @@
-import React from "react";
+
 
 import "./Home.css";
 import { Nav } from "@/components/Nav";
 import { Card } from "@/components/Card";
-import { Search } from "@/components/Search";
+
 
 export function Home() {
   return (

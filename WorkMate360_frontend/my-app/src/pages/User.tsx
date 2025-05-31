@@ -38,9 +38,9 @@ export function User() {
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const HighlightedDay = styled(PickersDay)(({ theme }) => ({
+  const [, setLoading] = useState(true);
+    const [, setError] = useState<string | null>(null);
+    const HighlightedDay = styled(PickersDay)(({  }) => ({
   backgroundColor: '#cbd5e1', // slate-300
   color: '#0f172a',           // slate-900
   borderRadius: '50%',
@@ -241,7 +241,7 @@ export function User() {
     sx={{ mx: "auto", my: 4 }}
     slots={{
       day: (props) => {
-        const { day, outsideCurrentMonth, ...other } = props;
+        const { day, outsideCurrentMonth } = props;
         const calendarDate = day.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
         const todosForDate = todos.filter(
           (todo) =>

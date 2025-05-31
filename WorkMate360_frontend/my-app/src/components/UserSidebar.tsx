@@ -8,7 +8,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "./ui/button";
-import axios from "axios";
+
 import { Link } from "react-router";
 
 import "react-calendar/dist/Calendar.css";
@@ -17,7 +17,7 @@ export function UserSidebar() {
   
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = useState("");
-  const [name, setName] = useState("");
+  const [, setName] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);

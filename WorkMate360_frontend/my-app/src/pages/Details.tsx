@@ -129,7 +129,7 @@ export function Details() {
       };
 
       // Send the update request
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:8080/profile/update`,
         updatedProfile,
         {
