@@ -39,7 +39,7 @@ jobs:
 
     - name: Build Spring Boot JAR
       run: |
-      
+        cd WorkMate360_backend
         mvn package -DskipTests
 
     - name: Deploy to server via SSH
