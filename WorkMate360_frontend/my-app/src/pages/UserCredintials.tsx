@@ -38,7 +38,7 @@ export default function UserCredintials() {
     if (passwordRegex.test(formData.password1)) {
       if (formData.password1 === formData.password2) {
         const username = localStorage.getItem("username");
-        const token = localStorage.getItem("jwtToken");
+        localStorage.getItem("jwtToken");
 
         await axios.post("http://localhost:8080/changepassword", {
           username: username, // You need to send username

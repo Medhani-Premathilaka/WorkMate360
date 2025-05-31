@@ -241,7 +241,7 @@ export function User() {
     sx={{ mx: "auto", my: 4 }}
     slots={{
       day: (props) => {
-        const { day, outsideCurrentMonth } = props;
+        const { day } = props;
         const calendarDate = day.toLocaleDateString("en-CA"); // "YYYY-MM-DD"
         const todosForDate = todos.filter(
           (todo) =>
