@@ -73,7 +73,7 @@ api.interceptors.response.use(
 );
 
 // Helper functions for common HTTP methods with TypeScript generics
-export const get = async <T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
+export const getUser = async <T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> => {
   return api.get<T>(url, config);
 };
 
