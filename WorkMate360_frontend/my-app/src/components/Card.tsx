@@ -180,12 +180,12 @@ if (error) {
       </div>
 
       {/* Profile Cards */}
-      <div className="w-full  md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+      <div className="w-full  md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4  ">
         {filteredProfiles.length > 0 ? (
           filteredProfiles.map((profile) => (
             <div
               key={profile.index}
-              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs"
+              className="flex flex-col items-center bg-[#99AAAB] p-4 rounded-lg hover:bg-[#8a9a9b] transition-colors w-full h-70 mx-auto max-w-xs hover:scale-103"
             >
               <img
                 src={profile.imageUrl || profileimage}
