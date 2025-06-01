@@ -7,7 +7,7 @@ import { Card } from "@/components/Card";
 
 export function Home() {
   return (
-    <div>
+    <div >
       <Nav />
       <div className="fixed top-45 left-64">
         <Card />

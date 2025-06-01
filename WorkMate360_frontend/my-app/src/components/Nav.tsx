@@ -72,7 +72,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="bg-slate-700 fixed w-full h-25 ">
+    <div className="bg-[#40486f] fixed w-full h-25 ">
       {/* Main Navigation */}
       <span className="text-white pl-10 font-serif text-2xl">WorkMate</span>
       <span className="font-serif text-white text-5xl">360</span>
