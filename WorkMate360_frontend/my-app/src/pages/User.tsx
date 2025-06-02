@@ -229,7 +229,7 @@ export function User() {
       <div className="w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
         <button
           onClick={handleClickOpen}
-          className="bg-slate-700 text-white fixed right-10 top-32 font-serif p-3  hover:text-xl rounded-xl"
+          className="bg-[#2f3e46] text-white fixed right-10 top-32 font-serif p-3  hover:bg-[#c0c5c8] hover:text-black rounded-xl"
         >
           + New Todo
         </button>

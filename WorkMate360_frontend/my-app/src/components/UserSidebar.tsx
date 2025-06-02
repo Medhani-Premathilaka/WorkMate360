@@ -1,6 +1,6 @@
 //import React, { useEffect, useState } from 'react'
 import { Dialog } from "@mui/material";
-import logoutimage from "../assets/images/logout.png";
+
 //import AlertDialog from './Alert';
 import React, { useEffect, useState } from "react";
 import DialogActions from "@mui/material/DialogActions";
@@ -8,13 +8,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "./ui/button";
+import { LogOut } from "lucide-react";
 
 import { Link } from "react-router";
 
 import "react-calendar/dist/Calendar.css";
 
 export function UserSidebar() {
-  
   const [open, setOpen] = React.useState(false);
   const [role, setRole] = useState("");
   const [, setName] = useState("");
@@ -41,30 +41,30 @@ export function UserSidebar() {
   }, []);
 
   return (
-    <div className="fixed top-25 left-0 w-50 h-[calc(100vh-6rem)] bg-slate-600 text-white p-4 z-50 font-serif">
+    <div className="fixed top-20 left-0 w-50 h-[calc(100vh-4rem)] bg-[#e6e6e6] text-[#2f3e46] p-4 z-50 font-serif shadow-2xl">
       {role === "USER" && (
         <>
           <button className=" fixed left-5 w-39 top-32 p-2 rounded-2xl hover:text-xl">
             <Link to={"/user"}>Home</Link>
           </button>
-          
+
           <hr
             className="fixed left-5 w-39 top-32 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
-          <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
-           <Link to={"/calender"}>Calender</Link>
-          </button>
+          {/* <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
+            <Link to={"/calender"}>Calender</Link>
+          </button> */}
 
           <hr
             className="fixed left-5 w-39 top-48 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
-          <button className=" fixed left-5 w-39 top-80 p-2 rounded-2xl hover:text-lg">
+          <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-lg">
             <Link to={"/form"}>Privacy</Link>
           </button>
           <hr
-            className="fixed left-5 w-39 top-64 border-t border-gray-400"
+            className="fixed left-5 w-39 top-32 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
           <a
@@ -75,13 +75,14 @@ export function UserSidebar() {
           </a>
 
           <button
-            className="fixed bottom-5 left-5 flex items-center "
+            className="fixed bottom-5 left-5 flex items-center  "
             onClick={handleClickOpen}
           >
-            <img src={logoutimage} alt="logout_image" className="w-8 h-8" />
-            <span className="ml-4">Logout</span>
+            <span className="bg-[#2f3e46] text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
+              <LogOut className="text-white hover:text-black" />
+              Logout
+            </span>
           </button>
-          
         </>
       )}
       <Dialog

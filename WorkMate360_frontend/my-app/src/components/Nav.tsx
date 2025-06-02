@@ -4,6 +4,7 @@ import menuimage from "../assets/images/menu.png";
 import profileimage from "../assets/images/profile.png";
 import { Sidebar } from "./Sidebar"; // Uncommented and assuming you have this component
 import {UserSidebar} from "./UserSidebar";
+import { Logs } from "lucide-react";
 
 // interface LoginResponse {
 //   token: string;
@@ -24,8 +25,14 @@ import {UserSidebar} from "./UserSidebar";
 //   imageUrl: string;
 // }
 
-export function Nav() {
-  const [showSidebar, setShowSidebar] = useState(true);
+interface NavProps {
+  showSidebar: boolean;
+  setShowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export function Nav({ showSidebar, setShowSidebar }: NavProps) {
+  //const [showSidebar, setShowSidebar] = useState(true);
+  const toggleSidebar = () => setShowSidebar((prev) => !prev);
   const [name, setName] = useState("");
   const [role,setRole] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
@@ -67,21 +74,33 @@ useEffect(() => {
     }
   }, []);
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
+  // const toggleSidebar = () => {
+  //   setShowSidebar(!showSidebar);
+  // };
 
   return (
-    <div className="bg-[#40486f] fixed w-full h-25 ">
+    <div className="bg-[#2f3e46] fixed w-full h-20 flex items-center">
       {/* Main Navigation */}
-      <span className="text-white pl-10 font-serif text-2xl">WorkMate</span>
-      <span className="font-serif text-white text-5xl">360</span>
+      <div className="flex items-center ">
+        <div className="pl-10 ">
+        <button
+          onClick={toggleSidebar}
+          className="w-7 h-8 bg-contain bg-no-repeat bg-center  focus:outline-none"
+          
+        ><Logs className="text-white"/></button>
+      </div>
+        <span className="text-white  font-serif pb-1 text-2xl">WorkMate</span>
+      <span className="font-serif text-white text-4xl">360</span>
+      {/* Menu Button */}
+      
+      </div>
+      
       {/* <button style={{backgroundImage:`url(${profileimage})`}} className='fixed top-0 right-10 w-auto bg-black'> </button> */}
 
       <div className="flex items-center fixed right-10 top-0">
-        <span className="text-white font-serif mr-4">
+        <span className="text-white font-serif mr-4 ">
           Welcome back, {name ? name : "ADMIN"} {role}!
-        </span>
+        </span >
         {/* <button
           className="w-20 h-20 bg-contain bg-no-repeat bg-center rounded-full border-2 border-white"
           style={{
@@ -92,21 +111,13 @@ useEffect(() => {
         <img
     src={profileImageUrl || profileimage}
     alt="profile"
-    className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
+    className="w-16 h-16  mt-2 object-cover rounded-full mb-3 border-2 border-white"
     onError={(e) => {
       (e.target as HTMLImageElement).src = profileimage;
     }}
   />
       </div>
-      {/* Menu Button */}
-      <div className="pl-10 pt-2">
-        <button
-          onClick={toggleSidebar}
-          className="w-7 h-8 bg-contain bg-no-repeat bg-center focus:outline-none"
-          style={{ backgroundImage: `url(${menuimage})` }}
-          aria-label="Toggle menu"
-        ></button>
-      </div>
+      
 
       {/* Conditionally render Sidebar */}
       {showSidebar  && sidebar}

@@ -19,23 +19,24 @@ export function Search({ onSearch }: SearchProps) {
   };
 
   return (
-    <div className='flex items-center'>
-      <input 
-        type="text" 
-        className='outline-black w-100 h-10 rounded-l-xl text-right bg-slate-300 p-2' 
-        placeholder='Search by Index or Name'
+    <div className="flex items-center w-full max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+      <input
+        type="text"
+        className="flex-grow h-12 px-4 text-gray-700 bg-white  focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-l-xl"
+        placeholder="Search by Index or Name"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyPress}
       />
-      <button 
-        className='w-10 h-10 bg-slate-600 rounded-r-xl hover:bg-slate-500 flex items-center justify-center'
+      <button
+        className="h-12 w-12 bg-sky-600 hover:bg-sky-700 flex items-center justify-center rounded-r-xl transition-colors duration-200"
         onClick={handleSearch}
+        aria-label="Search"
       >
-        <img 
-          src={searchimage} 
-          alt="search_image" 
-          className="w-6 h-6"  // Adjusted size for better proportion
+        <img
+          src={searchimage}
+          alt="search"
+          className="w-6 h-6"
         />
       </button>
     </div>
