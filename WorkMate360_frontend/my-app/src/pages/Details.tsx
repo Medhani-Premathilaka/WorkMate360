@@ -29,6 +29,7 @@ interface Profile {
 }
 
 export function Details() {
+  const [showSidebar, setShowSidebar] = useState(true);
   const { index } = useParams<{ index: string }>();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -253,12 +254,12 @@ export function Details() {
   }
   return (
     <div className="flex flex-col h-screen">
-      <Nav />
+     <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="flex-1 overflow-hidden bg-gray-100">
         <div className="h-full overflow-y-auto p-4 pt-30">
-          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl font-serif">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl ">
             <form className="p-8" onSubmit={updateData}>
-              <h2 className="text-center text-xl font-bold p-8">
+              <h2 className="text-center text-xl font-bold p-4">
                 {profile.name}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-8">

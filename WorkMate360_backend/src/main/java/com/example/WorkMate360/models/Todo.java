@@ -1,5 +1,5 @@
 package com.example.WorkMate360.models;
-
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Entity;
@@ -22,7 +22,7 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    private LocalDate dueDate; // Links to calendar
+    private LocalDateTime dueDate; // Links to calendar
     private boolean isCompleted;
     private String description;
 

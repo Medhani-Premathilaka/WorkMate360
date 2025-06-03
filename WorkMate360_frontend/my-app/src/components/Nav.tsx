@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Nav.css";
-import menuimage from "../assets/images/menu.png";
+//import menuimage from "../assets/images/menu.png";
 import profileimage from "../assets/images/profile.png";
 import { Sidebar } from "./Sidebar"; // Uncommented and assuming you have this component
 import {UserSidebar} from "./UserSidebar";
@@ -79,7 +79,7 @@ useEffect(() => {
   // };
 
   return (
-    <div className="bg-[#2f3e46] fixed w-full h-20 flex items-center">
+    <div className="bg-[#2f3e46]  w-full h-20 flex items-center">
       {/* Main Navigation */}
       <div className="flex items-center ">
         <div className="pl-10 ">
@@ -97,8 +97,8 @@ useEffect(() => {
       
       {/* <button style={{backgroundImage:`url(${profileimage})`}} className='fixed top-0 right-10 w-auto bg-black'> </button> */}
 
-      <div className="flex items-center fixed right-10 top-0">
-        <span className="text-white font-serif mr-4 ">
+      <div className="flex items-center  absolute right-10 ">
+        <span className="text-white  mr-4 ">
           Welcome back, {name ? name : "ADMIN"} {role}!
         </span >
         {/* <button

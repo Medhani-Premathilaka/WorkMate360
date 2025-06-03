@@ -35,6 +35,7 @@ interface Todo {
 
 export function User() {
   const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(true);
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -145,12 +146,16 @@ export function User() {
     //   ...formData,
     //   isCompleted: typeof formData.isCompleted === "boolean" ? formData.isCompleted : false,
     // };
-    const profileIndex = localStorage.getItem("index");
+    let dueDate = formData.dueDate;
+    if (dueDate && dueDate.length === 16) {
+    dueDate = dueDate + ":00";
+  }
     const payload = {
-  ...formData,
-  profile: { index: parseInt(profileIndex || "0", 10) },
-  isCompleted: typeof formData.isCompleted === "boolean" ? formData.isCompleted : false,
-};
+    ...formData,
+    dueDate,
+    profile: { index: parseInt(localStorage.getItem("index") || "0", 10) },
+    isCompleted: typeof formData.isCompleted === "boolean" ? formData.isCompleted : false,
+  };
       console.log("Submitting formData:", payload);
 
       if (editMode) {
@@ -225,11 +230,11 @@ export function User() {
 
   return (
     <div>
-      <Nav />
+      <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-auto flex flex-col">
         <button
           onClick={handleClickOpen}
-          className="bg-[#2f3e46] text-white fixed right-10 top-32 font-serif p-3  hover:bg-[#c0c5c8] hover:text-black rounded-xl"
+          className="bg-[#2f3e46] text-white fixed right-10 top-32  p-3  hover:bg-[#c0c5c8] hover:text-black rounded-xl"
         >
           + New Todo
         </button>
@@ -252,7 +257,7 @@ export function User() {
           return (
             <Tooltip
               key={calendarDate}
-              title={todosForDate.map((todo) => `This is the due date for "${todo.title}"`).join('\n')}
+              title={todosForDate.map((todo) => ` ${todo.title} at "${todo.dueDate}"`).join('\n')}
               arrow
               placement="top"
             >
@@ -306,7 +311,7 @@ export function User() {
               Due Date
               </label>
               <input
-              type="date"
+              type="datetime-local"
               name="dueDate"
               value={formData.dueDate}
               onChange={handleChange}

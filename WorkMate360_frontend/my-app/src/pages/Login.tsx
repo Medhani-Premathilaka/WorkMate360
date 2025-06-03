@@ -112,7 +112,7 @@ localStorage.setItem("username", response.data.username); // Make sure your back
 
   return (
     <div className="bg-[url(../assets/images/login.jpg)] min-h-screen w-full bg-cover bg-center">
-      <div className="fixed bottom-1/2 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-80 h-auto p-8 border-2 border-white/50 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl font-serif">
+      <div className="fixed bottom-1/2 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-80 h-auto p-8 border-2 border-white/50 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl ">
         <h3 className="text-center text-xl font-bold text-slate-700">
           Welcome
         </h3>

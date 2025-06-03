@@ -1,6 +1,6 @@
 //import { useState } from 'react';
 import { Dialog } from "@mui/material";
-import logoutimage from "../assets/images/logout.png";
+
 //import AlertDialog from './Alert';
 import React, { useEffect, useState } from "react";
 import DialogActions from "@mui/material/DialogActions";
@@ -12,6 +12,7 @@ import axios from "axios";
 import { LogOut } from "lucide-react";
 
 export function Sidebar() {
+  
   const [open, setOpen] = React.useState(false);
   const [employeeCount, setEmployeeCount] = useState<number>(0);
   const [role, setRole] = useState("");
@@ -51,15 +52,15 @@ export function Sidebar() {
   }, []);
 
   return (
-    <div className="fixed top-20 left-0 w-50 h-[calc(100vh-4rem)] bg-[#e6e6e6] text-white p-4 z-50 font-serif shadow-2xl">
+    <div className="absolute top-20 left-0 w-50 h-[calc(100vh-0rem)] bg-[#e6e6e6] text-white p-4 z-50  shadow-2xl">
       {role === "ADMIN" && (
         <>
-          <div className="fixed left-5 w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black font-serif">
+          <div className="absolute left-5 w-39 h-32 rounded-xl bg-slate-200 shadow-md flex flex-col items-center justify-center p-4 text-black ">
             <span className="text-4xl mb-2">{employeeCount}</span>
             <span className="text-l text-gray-600">Total Employees</span>
           </div>
-          <div className="fixed top-70 left-5">
-            <button className="bg-[#2f3e46] text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
+          <div className="absolute top-50 left-5">
+            <button className="bg-[#2f3e46] text-white  px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
               <a href="/new" className="flex items-center gap-1">
                 <span className="text-2xl font-medium">+</span>
                 <span className="text-base font-medium">Create New</span>
@@ -67,7 +68,7 @@ export function Sidebar() {
             </button>
           </div>
           <button
-            className="fixed bottom-5 left-5 flex items-center  "
+            className="absolute bottom-25 left-5 flex items-center  "
             onClick={handleClickOpen}
           >
             <span className="bg-[#2f3e46] text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">

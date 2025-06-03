@@ -41,15 +41,15 @@ export function UserSidebar() {
   }, []);
 
   return (
-    <div className="fixed top-20 left-0 w-50 h-[calc(100vh-4rem)] bg-[#e6e6e6] text-[#2f3e46] p-4 z-50 font-serif shadow-2xl">
+    <div className="absolute top-20 left-0 w-50 h-[calc(100vh-0rem)] bg-[#e6e6e6] text-[#2f3e46] p-4 z-50 font- shadow-2xl flex flex-col gap-4">
       {role === "USER" && (
         <>
-          <button className=" fixed left-5 w-39 top-32 p-2 rounded-2xl hover:text-xl">
+          <button className="absolute left-5 w-39 top-10 p-2 rounded-2xl hover:text-lg">
             <Link to={"/user"}>Home</Link>
           </button>
 
           <hr
-            className="fixed left-5 w-39 top-32 border-t border-gray-400"
+            className="absolute left-5 w-39 top-10 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
           {/* <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
@@ -57,28 +57,28 @@ export function UserSidebar() {
           </button> */}
 
           <hr
-            className="fixed left-5 w-39 top-48 border-t border-gray-400"
+            className="absolute left-5 w-39 top-48 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
-          <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-lg">
+          <button className=" absolute left-5 w-39 top-30 p-2 rounded-2xl hover:text-lg">
             <Link to={"/form"}>Privacy</Link>
           </button>
           <hr
-            className="fixed left-5 w-39 top-32 border-t border-gray-400"
+            className="absolute left-5 w-39 top-30 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
           />
           <a
             href="mailto:workmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
-            className="fixed left-5 w-39 top-64 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
+            className="absolute left-5 w-39 top-48 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
           >
             Leave Request
           </a>
 
           <button
-            className="fixed bottom-5 left-5 flex items-center  "
+            className="absolute bottom-25  flex items-center  "
             onClick={handleClickOpen}
           >
-            <span className="bg-[#2f3e46] text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
+            <span className="bg-[#2f3e46] text-white  px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
               <LogOut className="text-white hover:text-black" />
               Logout
             </span>

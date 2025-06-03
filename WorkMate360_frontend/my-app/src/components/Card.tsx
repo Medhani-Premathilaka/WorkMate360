@@ -52,7 +52,7 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
         setLoading(false);
       }
     };
-
+    
     fetchAllProfiles();
   }, []);
 
@@ -167,9 +167,9 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
   }
 
   return (
-    <div className="  w-full pb-50 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-y-auto overflow-x-none flex flex-col">
+    <div className="  w-full pb-30 min-h-screen bg-white rounded-xl shadow-lg h-64 overflow-y-auto overflow-x-none flex flex-col">
       {/* Search Input */}
-      <div className="w-full flex justify-end p-4 pt-30">
+      <div className="w-full flex justify-end p-4 pt-10 ">
         <div className="w-full max-w-md">
           <Autocomplete
             freeSolo
@@ -213,7 +213,7 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
                   className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
                 />
                 <div className="text-center w-full">
-                  <p className="text-gray-900 font-medium text-base md:text-lg">
+                  <p className="text-gray-900 font-bold text-base md:text-lg">
                     {profile.name}
                   </p>
                   <p className="text-gray-700 text-xs md:text-sm font-bold">

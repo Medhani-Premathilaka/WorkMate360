@@ -43,6 +43,7 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
         setLoading(false);
       }
     };
+
     fetchAllTodos();
   }, []);
 
@@ -83,30 +84,30 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
   // };
 
   const handleToggleComplete = async (todo: Todo, e?: React.MouseEvent) => {
-  if (e) e.stopPropagation();
-  try {
-    // Prepare the full todo object as required by backend
-    const updatedTodo = {
-      ...todo,
-      isCompleted: !todo.isCompleted,
-      profile: { index: todo.profile.index }, // Ensure profile is present and correct
-    };
-    await axios.put(
-      `http://localhost:8080/todo/update/${todo.id}`,
-      updatedTodo
-    );
-    setTodos(prev =>
-      prev.map(t => t.id === todo.id ? { ...updatedTodo } : t)
-    );
-  } catch (error) {
-    console.error("Error updating todo status:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Failed to update",
-      text: "There was a problem updating the todo. Please try again."
-    });
-  }
-};
+    if (e) e.stopPropagation();
+    try {
+      // Prepare the full todo object as required by backend
+      const updatedTodo = {
+        ...todo,
+        isCompleted: !todo.isCompleted,
+        profile: { index: todo.profile.index }, // Ensure profile is present and correct
+      };
+      await axios.put(
+        `http://localhost:8080/todo/update/${todo.id}`,
+        updatedTodo
+      );
+      setTodos((prev) =>
+        prev.map((t) => (t.id === todo.id ? { ...updatedTodo } : t))
+      );
+    } catch (error) {
+      console.error("Error updating todo status:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to update",
+        text: "There was a problem updating the todo. Please try again.",
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -178,7 +179,7 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
   return (
     <div className="w-full pb-500 min-h-screen bg-white rounded-xl overflow-auto p-6 ">
       <h2 className="text-2xl font-bold mb-6 text-slate-600">My Tasks</h2>
-      <div className="max-h-[65vh] fixed left-64 right-100 overflow-y-auto p-4 mb-10">
+      <div className="max-h-[65vh] fixed left-64 right-100 overflow-y-auto p mb-10">
         {todos.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <p>No tasks found. Create a new task to get started!</p>
@@ -218,16 +219,20 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
                         {todo.title}
                       </h3>
                       <p className="text-sm text-gray-500">
-                        Due: {new Date(todo.dueDate).toLocaleDateString()}
+                        Due: {new Date(todo.dueDate).toLocaleDateString()}{" "}
+                        {new Date(todo.dueDate).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                   </div>
                   <div className="flex space-x-2">
                     <button
-                      onClick={e => {
-    e.stopPropagation();
-    onEdit(todo); // <-- call the handler from props
-  }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(todo); // <-- call the handler from props
+                      }}
                       className="p-2 text-blue-700 hover:bg-blue-50 rounded-lg"
                     >
                       <svg

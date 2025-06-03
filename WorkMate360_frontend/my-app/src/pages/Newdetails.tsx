@@ -24,6 +24,7 @@ interface EmployeeData {
 
 export function Newdetails() {
   const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -92,26 +93,44 @@ export function Newdetails() {
     }
   };
 
+  const calculateAge = (dob: string) => {
+    if (!dob) return "";
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age >= 0 ? age.toString() : "";
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "dateOfBirth") {
+      const age = calculateAge(value);
+      setFormData((prev) => ({
+        ...prev,
+        dateOfBirth: value,
+        ageNow: age,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    
-  if (!formData.name || !formData.email || !formData.phoneNumber) {
-    Swal.fire("Error", "Please fill in all required fields", "error");
-    return;
-  }
+    if (!formData.name || !formData.email || !formData.phoneNumber) {
+      Swal.fire("Error", "Please fill in all required fields", "error");
+      return;
+    }
 
-  try {
-    
-    await axios.post("http://localhost:8080/profile/add", formData);
+    try {
+      await axios.post("http://localhost:8080/profile/add", formData);
 
       await Swal.fire({
         position: "center",
@@ -127,39 +146,40 @@ export function Newdetails() {
     } catch (error) {
       console.error("Submission error:", error);
       //let errorMessage = "Failed to add employee";
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 403) {
-        // Handle permission/authorization errors
-        Swal.fire({
-          title: "Permission Denied",
-          text: "You don't have permission to add employees. Please login with an admin account.",
-          icon: "error",
-          confirmButtonText: "Login Again"
-        }).then(() => {
-          localStorage.removeItem("jwtToken"); // Clear invalid token
-          navigate("/login");
-        });
-      } else if (error.response?.status === 401) {
-        // Handle authentication errors
-        Swal.fire({
-          title: "Session Expired",
-          text: "Please log in again to continue.",
-          icon: "warning",
-          confirmButtonText: "Login"
-        }).then(() => {
-          localStorage.removeItem("jwtToken");
-          navigate("/login");
-        });
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 403) {
+          // Handle permission/authorization errors
+          Swal.fire({
+            title: "Permission Denied",
+            text: "You don't have permission to add employees. Please login with an admin account.",
+            icon: "error",
+            confirmButtonText: "Login Again",
+          }).then(() => {
+            localStorage.removeItem("jwtToken"); // Clear invalid token
+            navigate("/login");
+          });
+        } else if (error.response?.status === 401) {
+          // Handle authentication errors
+          Swal.fire({
+            title: "Session Expired",
+            text: "Please log in again to continue.",
+            icon: "warning",
+            confirmButtonText: "Login",
+          }).then(() => {
+            localStorage.removeItem("jwtToken");
+            navigate("/login");
+          });
+        } else {
+          // Handle other errors
+          const errorMessage =
+            error.response?.data?.message || "Failed to add employee";
+          Swal.fire("Error", errorMessage, "error");
+        }
       } else {
-        // Handle other errors
-        const errorMessage = error.response?.data?.message || "Failed to add employee";
-        Swal.fire("Error", errorMessage, "error");
+        // Handle non-Axios errors
+        Swal.fire("Error", "An unexpected error occurred", "error");
       }
-    } else {
-      // Handle non-Axios errors
-      Swal.fire("Error", "An unexpected error occurred", "error");
     }
-  }
   };
 
   const handleReset = () => {
@@ -188,10 +208,10 @@ export function Newdetails() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Nav />
+      <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 pt-30 bg-gray-100">
-          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden font-serif">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden ">
             <form className="p-8" onSubmit={handleSubmit}>
               <h2 className="text-center text-xl font-bold p-8">
                 Add New Employee
@@ -226,7 +246,7 @@ export function Newdetails() {
                   </div>
 
                   <div>
-                    <label className="block mb-2">District *</label>
+                    <label className="block mb-2">City *</label>
                     <input
                       type="text"
                       name="district"
@@ -256,6 +276,7 @@ export function Newdetails() {
                       name="dateOfBirth"
                       onChange={handleChange}
                       value={formData.dateOfBirth}
+                      max="2003-01-01"
                       className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
                       required
                     />
@@ -266,10 +287,9 @@ export function Newdetails() {
                     <input
                       type="number"
                       name="ageNow"
-                      onChange={handleChange}
                       value={formData.ageNow}
-                      min={18}
                       className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
+                      readOnly
                       required
                     />
                   </div>
@@ -287,6 +307,7 @@ export function Newdetails() {
                       <option value="Civil">Civil</option>
                       <option value="Mechanical">Mechanical</option>
                       <option value="Electrical">Electrical</option>
+                      <option value="Electrical">IT</option>
                     </select>
                   </div>
 
@@ -303,7 +324,7 @@ export function Newdetails() {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Salary($) *</label>
+                    <label className="block mb-2">Salary (Annual)($) *</label>
                     <input
                       type="number"
                       name="salary"
@@ -331,7 +352,7 @@ export function Newdetails() {
                   </div>
 
                   <div>
-                    <label className="block mb-2">Province *</label>
+                    <label className="block mb-2">State *</label>
                     <input
                       type="text"
                       name="province"

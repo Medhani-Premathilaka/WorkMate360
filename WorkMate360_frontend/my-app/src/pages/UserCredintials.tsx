@@ -11,6 +11,7 @@ interface Login {
 }
 
 export default function UserCredintials() {
+  const [showSidebar, setShowSidebar] = useState(true);
   const [formData, setFormData] = useState<Login>({
     password1: "",
     password2: "",
@@ -89,7 +90,7 @@ export default function UserCredintials() {
 
   return (
     <div>
-      <Nav />
+      <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
         <div className="shadow-2xl rounded-2xl bg-white p-10 w-full max-w-md">
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
