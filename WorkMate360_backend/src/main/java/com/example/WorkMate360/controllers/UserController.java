@@ -116,6 +116,7 @@ public ResponseEntity<?> changePassword(
         Map<String, String> response = new HashMap<>();
         response.put("token", jwtToken);
         response.put("role", role);
+        response.put("firstLogin", "true"); // Default value, can be changed later
         response.put("username", user.getUsername());
         Login loginUser = userService.findByUsername(user.getUsername());
         if (loginUser != null && loginUser.getProfile() != null) {

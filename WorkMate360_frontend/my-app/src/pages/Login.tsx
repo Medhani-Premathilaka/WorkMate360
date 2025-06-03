@@ -15,6 +15,7 @@ interface LoginResponse {
   imageUrl: string;
   username: string;
   Index: string;
+  firstLogin: string;
 
   //imageUrl: string;// Add other fields if your backend returns more data
 }
@@ -55,7 +56,7 @@ export const Login: React.FC = () => {
       // Extract token and role from response properly
       const token = response.data.token;
       const role = response.data.role;
-
+      localStorage.setItem("firstLogin",response.data.firstLogin);
       localStorage.setItem("index", response.data.Index);
       localStorage.setItem("token",token);
       localStorage.setItem("role", response.data.role);
