@@ -72,7 +72,7 @@ useEffect(() => {
     } else if ((storedRole || "") === "USER") {
       setSidebar(<UserSidebar />);
     }
-  }, []);
+  }, [role]);
 
   // const toggleSidebar = () => {
   //   setShowSidebar(!showSidebar);

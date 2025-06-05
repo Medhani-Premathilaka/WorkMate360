@@ -42,7 +42,12 @@ export function User() {
   const [, setLoading] = useState(true);
     const [, setError] = useState<string | null>(null);
 
-  
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+    if (!token) {
+      navigate("/login-error");
+    }
+  }, [navigate]);
 
     const HighlightedDay = styled(PickersDay)(({  }) => ({
   backgroundColor: '#cbd5e1', // slate-300

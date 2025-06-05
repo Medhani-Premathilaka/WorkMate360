@@ -1,8 +1,5 @@
-//import { useState } from 'react';
-import { Dialog } from "@mui/material";
-
-//import AlertDialog from './Alert';
 import React, { useEffect, useState } from "react";
+import { Dialog } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -10,9 +7,10 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "./ui/button";
 import axios from "axios";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function Sidebar() {
-  
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [employeeCount, setEmployeeCount] = useState<number>(0);
   const [role, setRole] = useState("");
@@ -23,7 +21,6 @@ export function Sidebar() {
     if (storedName) setName(storedName);
 
     const storedRole = localStorage.getItem("role");
-    console.log(storedName);
     if (storedRole === "ADMIN") {
       setRole("ADMIN");
     } else if (storedRole === "USER") {
@@ -32,11 +29,28 @@ export function Sidebar() {
   }, []);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("firstLogin");
+    localStorage.removeItem("index");
+    localStorage.removeItem("name");
+    localStorage.removeItem("profileImageUrl");
+    localStorage.removeItem("username");
+    // Optionally, clear all localStorage:
+    // localStorage.clear();
+
+    // Redirect to login page
+    navigate("/");
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -102,10 +116,13 @@ export function Sidebar() {
             Disagree
           </Button>
           <Button
-            onClick={handleClose}
+            onClick={() => {
+              handleLogout();
+              handleClose();
+            }}
             className="bg-slate-700 hover:bg-slate-300 hover:text-black"
           >
-            <a href="/">Agree</a>
+            Agree
           </Button>
         </DialogActions>
       </Dialog>

@@ -8,6 +8,7 @@ import { Newdetails } from './pages/Newdetails';
 import { User } from './pages/User';
 import UserCredintials from './pages/UserCredintials';
 import Calendar from 'react-calendar';
+import { LoginError } from './pages/LoginError';
 function App() {
   return (
   <Router>
@@ -20,6 +21,7 @@ function App() {
        <Route path="/details/:index" element={<Details />} />
        <Route path="/user" element={<User/>}> </Route>
        <Route path="/form" element={<UserCredintials/>}></Route>
+       <Route path="/login-error" element={<LoginError />} />
        <Route path="/calender" element={<Calendar/>}></Route>
     </Routes>
   </Router>

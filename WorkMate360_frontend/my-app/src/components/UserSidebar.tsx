@@ -1,26 +1,36 @@
-//import React, { useEffect, useState } from 'react'
-import { Dialog } from "@mui/material";
-
-//import AlertDialog from './Alert';
 import React, { useEffect, useState } from "react";
+import { Dialog } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router";
-
 import "react-calendar/dist/Calendar.css";
 
 export function UserSidebar() {
-  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [role, setRole] = useState("");
   const [, setName] = useState("");
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleLogout = () => {
+    // Clear all relevant data
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("firstLogin");
+    localStorage.removeItem("index");
+    localStorage.removeItem("name");
+    localStorage.removeItem("profileImageUrl");
+    localStorage.removeItem("username");
+    // Optionally, clear all localStorage:
+    // localStorage.clear();
+
+    // Redirect to login page
+    navigate("/");
   };
 
   const handleClose = () => {
@@ -32,7 +42,6 @@ export function UserSidebar() {
     if (storedName) setName(storedName);
 
     const storedRole = localStorage.getItem("role");
-    console.log(storedName);
     if (storedRole === "ADMIN") {
       setRole("ADMIN");
     } else if (storedRole === "USER") {
@@ -47,7 +56,6 @@ export function UserSidebar() {
           <button className="absolute left-5 w-39 top-10 p-2 rounded-2xl hover:text-lg">
             <Link to={"/user"}>Home</Link>
           </button>
-
           <hr
             className="absolute left-5 w-39 top-10 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
@@ -55,7 +63,6 @@ export function UserSidebar() {
           {/* <button className=" fixed left-5 w-39 top-48 p-2 rounded-2xl hover:text-xl">
             <Link to={"/calender"}>Calender</Link>
           </button> */}
-
           <hr
             className="absolute left-5 w-39 top-48 border-t border-gray-400"
             style={{ marginTop: "3.5rem" }}
@@ -73,12 +80,11 @@ export function UserSidebar() {
           >
             Leave Request
           </a>
-
           <button
-            className="absolute bottom-25  flex items-center  "
-            onClick={handleClickOpen}
+            className="absolute bottom-25 flex items-center"
+            onClick={() => setOpen(true)}
           >
-            <span className="bg-[#2f3e46] text-white  px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
+            <span className="bg-[#2f3e46] text-white px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
               <LogOut className="text-white hover:text-black" />
               Logout
             </span>
@@ -108,10 +114,13 @@ export function UserSidebar() {
             Disagree
           </Button>
           <Button
-            onClick={handleClose}
+            onClick={() => {
+              handleLogout();
+              handleClose();
+            }}
             className="bg-slate-700 hover:bg-slate-300 hover:text-black"
           >
-            <a href="/">Agree</a>
+            Agree
           </Button>
         </DialogActions>
       </Dialog>
