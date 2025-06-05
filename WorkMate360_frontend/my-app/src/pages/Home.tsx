@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export function Home() {
   // Define showSidebar as needed, here as an example it's set to true
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
       const token = localStorage.getItem("jwtToken");

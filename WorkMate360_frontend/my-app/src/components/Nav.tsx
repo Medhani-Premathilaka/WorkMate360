@@ -38,25 +38,7 @@ export function Nav({ showSidebar, setShowSidebar }: NavProps) {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const [sidebar, setSidebar] = useState<React.ReactNode>(null);
 
-//   const selectSidebar = () => {
-//   const storedRole = localStorage.getItem("role");
-//   if (storedRole === "ADMIN") {
-//     setSidebar(<Sidebar />);
-//   } else if (storedRole === "USER") {
-//     setSidebar(<UserSidebar />);
-//   }
-// };
 
-// useEffect(() => {
-//   const storedName = localStorage.getItem("name");
-//   if (storedName) setName(storedName);
-//   selectSidebar();
-// }, []);
-
-// const toggleSidebar = () => {
-//   selectSidebar();
-//   setShowSidebar(!showSidebar);
-// };
 
 useEffect(() => {
     const storedName = localStorage.getItem("name");

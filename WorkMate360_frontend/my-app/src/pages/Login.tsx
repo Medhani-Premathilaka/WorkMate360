@@ -58,7 +58,7 @@ export const Login: React.FC = () => {
       const role = response.data.role;
       localStorage.setItem("firstLogin", response.data.firstLogin ? "true" : "false");
       localStorage.setItem("index", response.data.Index);
-      localStorage.setItem("token",token);
+      localStorage.setItem("jwtToken", token);
       localStorage.setItem("role", response.data.role);
       // Example after login success
       localStorage.setItem("name", response.data.name);

@@ -307,7 +307,8 @@ export function Newdetails() {
                       <option value="Civil">Civil</option>
                       <option value="Mechanical">Mechanical</option>
                       <option value="Electrical">Electrical</option>
-                      <option value="Electrical">IT</option>
+                      <option value="It">IT</option>
+                      <option value="sales">Marketing</option>
                     </select>
                   </div>
 

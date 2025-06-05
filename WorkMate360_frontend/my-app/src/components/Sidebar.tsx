@@ -28,29 +28,17 @@ export function Sidebar() {
     }
   }, []);
 
-  const handleClickOpen = () => {
-    localStorage.removeItem("jwtToken");
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("firstLogin");
-    localStorage.removeItem("index");
-    localStorage.removeItem("name");
-    localStorage.removeItem("profileImageUrl");
-    localStorage.removeItem("username");
-    // Optionally, clear all localStorage:
-    // localStorage.clear();
-
-    // Redirect to login page
+  const handleLogout = () => {
+    localStorage.clear();
     navigate("/");
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true); // Only open the dialog
   };
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
   };
 
   useEffect(() => {
@@ -82,7 +70,7 @@ export function Sidebar() {
             </button>
           </div>
           <button
-            className="absolute bottom-25 left-5 flex items-center  "
+            className="absolute bottom-25 left-5 flex items-center"
             onClick={handleClickOpen}
           >
             <span className="bg-[#2f3e46] text-white font-serif px-4 py-2 rounded-xl flex items-center w-39 justify-center gap-2 hover:bg-[#c0c5c8] hover:text-black ">
@@ -116,10 +104,7 @@ export function Sidebar() {
             Disagree
           </Button>
           <Button
-            onClick={() => {
-              handleLogout();
-              handleClose();
-            }}
+            onClick={handleLogout}
             className="bg-slate-700 hover:bg-slate-300 hover:text-black"
           >
             Agree

@@ -44,9 +44,9 @@ export function User() {
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
-    if (!token) {
-      navigate("/login-error");
-    }
+if (!token) {
+  navigate("/login-error");
+}
   }, [navigate]);
 
     const HighlightedDay = styled(PickersDay)(({  }) => ({
