@@ -200,48 +200,48 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
         className={`transition-all duration-300 w-full flex-1 pt-
         ${showSidebar ? "md:ml-64" : "ml-0"}`}
       >
-        <div className="w-full md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4 shadow-xl">
+        <div className="w-full md:p-5 overflow-y-auto flex-1 pb-24 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-2 shadow-xl max-w-6xl mx-auto">
           {filteredProfiles.length > 0 ? (
             filteredProfiles.map((profile) => (
               <div
-                key={profile.index}
-                className="flex flex-col items-center bg-[#a6b8c2] p-4 rounded-lg hover:bg-[#8db0c4] transition-colors w-full h-70 mx-auto max-w-xs hover:scale-105"
+          key={profile.index}
+          className="flex flex-col items-center bg-[#a6b8c2] p-4 rounded-lg hover:bg-[#8db0c4] transition-colors w-full h-70 mx-auto max-w-[210px] hover:scale-105"
               >
-                <img
-                  src={profile.imageUrl || profileimage}
-                  alt="profile"
-                  className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
-                />
-                <div className="text-center w-full">
-                  <p className="text-gray-900 font-bold text-base md:text-lg">
-                    {profile.name}
-                  </p>
-                  <p className="text-gray-700 text-xs md:text-sm font-bold">
-                    ID: {profile.index}
-                  </p>
-                  <p
-                    className="text-gray-700 text-xs md:text-sm truncate"
-                    title={profile.email}
-                  >
-                    {profile.email}
-                  </p>
-                  <p className="text-gray-700 text-xs md:text-sm">
-                    {profile.phoneNumber}
-                  </p>
-                </div>
-                <button
-                  className="mt-3 bg-[#2f3e46] px-3 py-1 md:px-4 md:py-2 rounded-xl hover:bg-[#b2bfc5] text-white hover:text-black w-full text-sm md:text-base"
-                  onClick={() => navigate(`/details/${profile.index}`)}
-                >
-                  View Details
-                </button>
+          <img
+            src={profile.imageUrl || profileimage}
+            alt="profile"
+            className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full mb-3 border-2 border-white"
+          />
+          <div className="text-center w-full">
+            <p className="text-gray-900 font-bold text-base md:text-lg">
+              {profile.name}
+            </p>
+            <p className="text-gray-700 text-xs md:text-sm font-bold">
+              ID: {profile.index}
+            </p>
+            <p
+              className="text-gray-700 text-xs md:text-sm truncate"
+              title={profile.email}
+            >
+              {profile.email}
+            </p>
+            <p className="text-gray-700 text-xs md:text-sm">
+              {profile.phoneNumber}
+            </p>
+          </div>
+          <button
+            className="mt-3 bg-[#2f3e46] px-3 py-1 md:px-4 md:py-2 rounded-xl hover:bg-[white] text-white hover:text-black hover:font-bold w-full text-sm md:text-base"
+            onClick={() => navigate(`/details/${profile.index}`)}
+          >
+            View Details
+          </button>
               </div>
             ))
           ) : (
             <div className="col-span-full text-center text-gray-500 p-10">
               {searchTerm
-                ? `No profile found matching "${searchTerm}"`
-                : "No profiles available"}
+          ? `No profile found matching "${searchTerm}"`
+          : "No profiles available"}
             </div>
           )}
         </div>

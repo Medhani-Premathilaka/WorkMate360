@@ -56,7 +56,7 @@ export const Login: React.FC = () => {
       // Extract token and role from response properly
       const token = response.data.token;
       const role = response.data.role;
-      localStorage.setItem("firstLogin",response.data.firstLogin);
+      localStorage.setItem("firstLogin", response.data.firstLogin ? "true" : "false");
       localStorage.setItem("index", response.data.Index);
       localStorage.setItem("token",token);
       localStorage.setItem("role", response.data.role);
@@ -81,7 +81,7 @@ localStorage.setItem("username", response.data.username); // Make sure your back
       console.log("Login successful, token stored");
 
       // Redirect to dashboard
-      if (role === "ADMIN") {
+      if (role === "ADMIN" ) {
         navigate("/home");
       } else if (role === "USER") {
         navigate("/user");

@@ -87,10 +87,11 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
     if (e) e.stopPropagation();
     try {
       // Prepare the full todo object as required by backend
+      
       const updatedTodo = {
         ...todo,
         isCompleted: !todo.isCompleted,
-        profile: { index: todo.profile.index }, // Ensure profile is present and correct
+        profile: { index: Number(localStorage.getItem("index")) }, // Ensure profile is present and correct
       };
       await axios.put(
         `http://localhost:8080/todo/update/${todo.id}`,
@@ -179,7 +180,7 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
   return (
     <div className="w-full pb-500 min-h-screen bg-white rounded-xl overflow-auto p-6 ">
       <h2 className="text-2xl font-bold mb-6 text-slate-600">My Tasks</h2>
-      <div className="max-h-[65vh] fixed left-64 right-100 overflow-y-auto p mb-10">
+      <div className="max-h-[65vh] fixed left-64 right-100 overflow-y-auto p-10 mb-10">
         {todos.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <p>No tasks found. Create a new task to get started!</p>

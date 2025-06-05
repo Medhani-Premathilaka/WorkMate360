@@ -221,7 +221,7 @@ export function Newdetails() {
                 {/* Left Column */}
                 <div className="space-y-4">
                   <div>
-                    <label className="block mb-2">Name *</label>
+                    <label className="block mb-2">Name with Initials *</label>
                     <input
                       name="name"
                       type="text"

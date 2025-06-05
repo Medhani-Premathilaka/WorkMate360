@@ -43,8 +43,11 @@ export default function UserCredintials() {
 
         await axios.post("http://localhost:8080/changepassword", {
           username: username, // You need to send username
-          password: formData.password1, // And the new password
+          password: formData.password1,
+           // And the new password
         });
+        localStorage.setItem("firstLogin", "false");
+        window.location.href = "/user";
         Swal.fire({
           title: "Do you want to save the changes?",
           showDenyButton: true,

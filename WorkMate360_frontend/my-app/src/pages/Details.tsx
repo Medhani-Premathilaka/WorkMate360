@@ -130,15 +130,11 @@ export function Details() {
       };
 
       // Send the update request
-      await axios.put(
-        `http://localhost:8080/profile/update`,
-        updatedProfile,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.put(`http://localhost:8080/profile/update`, updatedProfile, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       // Show success message
       const result = await Swal.fire({
@@ -254,7 +250,7 @@ export function Details() {
   }
   return (
     <div className="flex flex-col h-screen">
-     <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
+      <Nav showSidebar={showSidebar} setShowSidebar={setShowSidebar} />
       <div className="flex-1 overflow-hidden bg-gray-100">
         <div className="h-full overflow-y-auto p-4 pt-30">
           <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-xl ">
@@ -317,7 +313,15 @@ export function Details() {
                       setProfile({ ...profile, position: val })
                     }
                   />
+                  <InputField
+                    label="Salary"
+                    value={profile.salary}
+                    onChange={(val) =>
+                      setProfile({ ...profile, salary: Number(val) })
+                    }
+                  />
                 </div>
+                
 
                 {/* Right Column */}
                 <div className="space-y-4">

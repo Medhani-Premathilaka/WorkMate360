@@ -68,7 +68,7 @@ export function UserSidebar() {
             style={{ marginTop: "3.5rem" }}
           />
           <a
-            href="mailto:workmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
+            href="mailto:sendtoworkmate360@gmail.com?subject=Requesting%20Leave&body=I%20would%20like%20to%20request%20leave%20on%20..."
             className="absolute left-5 w-39 top-48 p-2 rounded-2xl   flex items-center justify-center hover:text-xl"
           >
             Leave Request
