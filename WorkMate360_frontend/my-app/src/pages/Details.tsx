@@ -287,9 +287,20 @@ export function Details() {
                     label="Date Of Birth"
                     type="date"
                     value={profile.dateOfBirth || ""}
-                    onChange={(val) =>
-                      setProfile({ ...profile, dateOfBirth: val })
-                    }
+                    onChange={(val) => {
+                      // Calculate age from the selected date
+                      const birthDate = new Date(val);
+                      const today = new Date();
+                      let age = today.getFullYear() - birthDate.getFullYear();
+                      const m = today.getMonth() - birthDate.getMonth();
+                      if (
+                        m < 0 ||
+                        (m === 0 && today.getDate() < birthDate.getDate())
+                      ) {
+                        age--;
+                      }
+                      setProfile({ ...profile, dateOfBirth: val, ageNow: age });
+                    }}
                   />
                   <InputField
                     label="Age"
@@ -301,7 +312,7 @@ export function Details() {
                   <SelectField
                     label="Department"
                     value={profile.department}
-                    options={["Civil", "Mechanical", "Electrical"]}
+                    options={["Civil", "Mechanical", "Electrical", "IT"]}
                     onChange={(val) =>
                       setProfile({ ...profile, department: val })
                     }
@@ -321,7 +332,6 @@ export function Details() {
                     }
                   />
                 </div>
-                
 
                 {/* Right Column */}
                 <div className="space-y-4">
