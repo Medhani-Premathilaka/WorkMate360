@@ -63,26 +63,25 @@ if (!token) {
   justifyContent: 'center',
 }));
   
-  useEffect(() => {
-    const fetchAllTodos = async () => {
-      try {
-        const index = localStorage.getItem("index");
-        if (!index) {
-          setError("Profile ID not found. Please login again.");
-          setLoading(false);
-          return;
-        }
-        const res = await api.get(
-          `/todo/getByProfileId/${index}`
-        );
-        setTodos(res.data);
-      } catch (error) {
-        console.error("Error fetching todos.", error);
-        setError("Failed to load todos. Please check console for details.");
-      } finally {
+  const fetchAllTodos = async () => {
+    try {
+      const index = localStorage.getItem("index");
+      if (!index) {
+        setError("Profile ID not found. Please login again.");
         setLoading(false);
+        return;
       }
-    };
+      const res = await api.get(`/todo/getByProfileId/${index}`);
+      setTodos(res.data);
+    } catch (error) {
+      console.error("Error fetching todos.", error);
+      setError("Failed to load todos. Please check console for details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAllTodos();
   }, []);
 
@@ -198,7 +197,9 @@ if (!token) {
         title: "Todo updated successfully!",
         showConfirmButton: false,
         timer: 1500,
+        
       });
+      
     }else {
       await api.post("/todo/create", formData);
       handleClose();
@@ -212,8 +213,8 @@ if (!token) {
     }
     
     handleReset();
+    await fetchAllTodos();
     
-    navigate("/user");
   } catch (error) {
     console.error("Submission error:", error);
     handleClose();
