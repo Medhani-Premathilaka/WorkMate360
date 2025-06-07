@@ -312,7 +312,7 @@ export function Details() {
                   <SelectField
                     label="Department"
                     value={profile.department}
-                    options={["Civil", "Mechanical", "Electrical", "IT"]}
+                    options={["Civil", "Mechanical", "Electrical", "IT","Marketing"]}
                     onChange={(val) =>
                       setProfile({ ...profile, department: val })
                     }

@@ -239,7 +239,7 @@ export function Newdetails() {
                       onChange={handleChange}
                       value={formData.phoneNumber}
                       type="tel"
-                      placeholder="ex:123-4567890"
+                      placeholder="ex:+1 (555) 234-5678"
                       className="w-full h-10 bg-slate-300 rounded-lg p-2 focus:outline-black"
                       required
                     />
@@ -307,7 +307,7 @@ export function Newdetails() {
                       <option value="Civil">Civil</option>
                       <option value="Mechanical">Mechanical</option>
                       <option value="Electrical">Electrical</option>
-                      <option value="It">IT</option>
+                      <option value="IT">IT</option>
                       <option value="sales">Marketing</option>
                     </select>
                   </div>

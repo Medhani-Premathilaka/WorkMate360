@@ -46,8 +46,7 @@ export default function UserCredintials() {
           password: formData.password1,
            // And the new password
         });
-        localStorage.setItem("firstLogin", "false");
-        window.location.href = "/user";
+        
         Swal.fire({
           title: "Do you want to save the changes?",
           showDenyButton: true,
