@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ import { styled } from '@mui/material/styles';
 import { Tooltip } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import api from "../api"
 
 
 interface Profile {
@@ -71,8 +72,8 @@ if (!token) {
           setLoading(false);
           return;
         }
-        const res = await axios.get(
-          `http://localhost:8080/todo/getByProfileId/${index}`
+        const res = await api.get(
+          `/todo/getByProfileId/${index}`
         );
         setTodos(res.data);
       } catch (error) {
@@ -178,8 +179,8 @@ if (!token) {
       console.log(`Sending PUT request to: http://localhost:8080/todo/update/${formData.id}`);
       console.log("With payload:", JSON.stringify(payload));
       
-      await axios.put(
-        `http://localhost:8080/todo/update/${formData.id}`,
+      await api.put(
+        `/todo/update/${formData.id}`,
         payload,
   {
     // headers: {
@@ -199,7 +200,7 @@ if (!token) {
         timer: 1500,
       });
     }else {
-      await axios.post("http://localhost:8080/todo/create", formData);
+      await api.post("/todo/create", formData);
       handleClose();
       await Swal.fire({
         position: "center",

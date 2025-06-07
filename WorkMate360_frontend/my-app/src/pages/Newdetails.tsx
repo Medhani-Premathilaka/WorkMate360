@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import api from "../api"
 
 interface EmployeeData {
   name: string;
@@ -130,7 +131,7 @@ export function Newdetails() {
     }
 
     try {
-      await axios.post("http://localhost:8080/profile/add", formData);
+      await api.post("/profile/add", formData);
 
       await Swal.fire({
         position: "center",

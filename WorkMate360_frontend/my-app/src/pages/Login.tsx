@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../api"
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -43,8 +44,8 @@ export const Login: React.FC = () => {
     setError("");
 
     try {
-      const response = await axios.post<LoginResponse>(
-        "http://localhost:8080/login",
+      const response = await api.post<LoginResponse>(
+        "/login",
         credentials,
         {
           headers: {

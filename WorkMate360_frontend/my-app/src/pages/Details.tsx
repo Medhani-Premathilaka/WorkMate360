@@ -1,10 +1,10 @@
 import { Nav } from "@/components/Nav";
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import profileimage from "../assets/images/profile.png";
+import api from "../api";
 
 interface Profile {
   index: number;
@@ -90,7 +90,7 @@ export function Details() {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:8080/profile/delete/${index}`);
+        await api.delete(`/profile/delete/${index}`);
         setProfile(null);
         Swal.fire("Deleted Successfully!", "", "success");
         navigate("/home");
@@ -130,7 +130,7 @@ export function Details() {
       };
 
       // Send the update request
-      await axios.put(`http://localhost:8080/profile/update`, updatedProfile, {
+      await api.put(`/profile/update`, updatedProfile, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -169,8 +169,8 @@ export function Details() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/profile/details/${index}`
+        const response = await api.get(
+          `/profile/details/${index}`
         );
         setProfile(response.data);
       } catch (error) {

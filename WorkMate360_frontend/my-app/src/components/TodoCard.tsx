@@ -1,6 +1,5 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+import api from "../api"
 import Swal from "sweetalert2";
 
 interface Profile {
@@ -32,8 +31,8 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
           setLoading(false);
           return;
         }
-        const res = await axios.get(
-          `http://localhost:8080/todo/getByProfileId/${index}`
+        const res = await api.get(
+          `/todo/getByProfileId/${index}`
         );
         setTodos(res.data);
       } catch (error) {
@@ -61,7 +60,7 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
       });
 
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:8080/todo/delete/${todoId}`);
+        await api.delete(`/todo/delete/${todoId}`);
         setTodos((prev) => prev.filter((todo) => todo.id !== todoId));
         Swal.fire({
           title: "Deleted!",
@@ -93,8 +92,8 @@ export function TodoCard({ onEdit }: { onEdit: (todo: Todo) => void }) {
         isCompleted: !todo.isCompleted,
         profile: { index: Number(localStorage.getItem("index")) }, // Ensure profile is present and correct
       };
-      await axios.put(
-        `http://localhost:8080/todo/update/${todo.id}`,
+      await api.put(
+        `/todo/update/${todo.id}`,
         updatedTodo
       );
       setTodos((prev) =>

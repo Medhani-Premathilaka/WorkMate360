@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import profileimage from "../assets/images/profile.png";
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
 import { matchSorter } from "match-sorter";
+import api from "../api"
 
 interface Profile {
   index: number;
@@ -42,7 +42,7 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
         //   };
         // }
 
-        const response = await axios.get(`http://localhost:8080/profile/all`);
+        const response = await api.get(`/profile/all`);
         setProfiles(response.data);
         setFilteredProfiles(response.data);
       } catch (error) {
@@ -58,7 +58,7 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
 
   const fetchProfileByName = async (name: string) => {
     try {
-      const response = await axios.get(`http://localhost:8080/profile/name`, {
+      const response = await api.get(`/profile/name`, {
         params: { name },
       });
       return response.data;

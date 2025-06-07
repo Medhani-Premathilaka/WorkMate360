@@ -5,9 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Button } from "./ui/button";
-import axios from "axios";
 import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../api"
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ export function Sidebar() {
   useEffect(() => {
     const fetchEmployeeCount = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/profile/count`);
+        const response = await api.get(`/profile/count`);
         setEmployeeCount(response.data);
       } catch (error) {
         console.log("Error", error);

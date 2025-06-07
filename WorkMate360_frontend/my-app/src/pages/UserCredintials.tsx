@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Home.css";
 import { Nav } from "@/components/Nav";
 import Swal from "sweetalert2";
-import axios from "axios";
+import api from "../api"
 
 interface Login {
   password1: string;
@@ -41,7 +41,7 @@ export default function UserCredintials() {
         const username = localStorage.getItem("username");
         localStorage.getItem("jwtToken");
 
-        await axios.post("http://localhost:8080/changepassword", {
+        await api.post("/changepassword", {
           username: username, // You need to send username
           password: formData.password1,
            // And the new password
