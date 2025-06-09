@@ -2,8 +2,8 @@ import type { AxiosInstance } from "axios";
 import axios from "axios";
 
 const api: AxiosInstance = axios.create({
-  baseURL:  'https://fe13-56-228-42-123.ngrok-free.app',
-  withCredentials: true
+  baseURL:  ' http://localhost:8080',
+  withCredentials: true  
   
 });
 

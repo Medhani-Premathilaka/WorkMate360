@@ -2,9 +2,7 @@ package com.example.WorkMate360.controllers;
 
 import com.example.WorkMate360.models.Todo;
 import com.example.WorkMate360.services.TodoService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todo")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class TodoController {
 
     @Autowired
