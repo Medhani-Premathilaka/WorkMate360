@@ -43,6 +43,7 @@ export function Card({ showSidebar }: { showSidebar: boolean }) {
         // }
 
         const response = await api.get(`/profile/all`);
+        console.log('API Response:', typeof response.data);
         setProfiles(response.data);
         setFilteredProfiles(response.data);
       } catch (error) {
