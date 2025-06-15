@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
+                                .requestMatchers("/login", "/register").permitAll()
                                 .requestMatchers("/profile/add").permitAll()
                                 .requestMatchers("/changepassword").permitAll()
                                 .requestMatchers("/todo/create").permitAll()
@@ -52,16 +52,16 @@ public class SecurityConfig {
                                 .requestMatchers("/todo/delete/{id}").permitAll()
                                 .requestMatchers("/todo/update").permitAll()
                                 .requestMatchers("/todo/**").permitAll()
-                        .requestMatchers(
+                                .requestMatchers(
 
-                                "/profile/details/{index}",
-                                "/profile/all",
-                                "/profile/name",
-                                "/profile/delete/{index}",
-                                "/profile/update",
-                                "/profile/count"
-                        ).permitAll()
-                         // All other requests require authentication
+                                        "/profile/details/{index}",
+                                        "/profile/all",
+                                        "/profile/name",
+                                        "/profile/delete/{index}",
+                                        "/profile/update",
+                                        "/profile/count"
+                                ).permitAll()
+                        // All other requests require authentication
                 )
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -73,7 +73,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://my-6i8hfyrqa-medhani-premathilakas-projects.vercel.app"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://my-app-eight-ebon-32.vercel.app/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
